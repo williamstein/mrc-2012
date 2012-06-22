@@ -1,1 +1,1 @@
-I've been posting a [compiled pdf here](snowbird-project.pdf).
+I've been posting a [compiled pdf here](http://wstein.org/tmp/snowbird-project.pdf).
