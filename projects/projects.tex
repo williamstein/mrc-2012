@@ -14,37 +14,30 @@
   $\Q(\sqrt{5})$. There is more information about resources for
   sutdying these problems in the wiki
   \url{https://github.com/williamstein/mrc-2012/wiki}.
+As far as I know these are unsolved research level questions. 
 \end{abstract}
 
 \tableofcontents
 
 \section{Background}
 
-\subsection{Congruence Module and Number}\label{sec:cong}
-Let $\T \subset \End(S)$ be a Hecke algebra, where $S$ is some space
-of cusp forms.  Suppose $M$ is a $\T$-module that is also of finite
-rank as a $\Z$-module, and $C\subset M$ is a {\em saturated}
-submodule, so $M/C$ is torsion free.  Moreover, suppose that $M_\Q =
-M\tensor\Q$ splits as a direct sum $C_{\Q} \oplus C'_{\Q}$, where
-$C'_{\Q}$ a $\T$-submodule.  Define the the {\em congruence module} of
-$C$ to be the $\T$-module $M/(C+C')$ and the {\em congruence number}
-of $C$ to be $\#(M/(C +C')) \in \Z$.  
 
 \section{Questions about classical modular forms}
 
-\subsection{A question of Barry Mazur about classical modular forms and Hida theory}
+\subsection{The ordinary defect}
 
-This involves gathering arithmetic statistics about a question that
-Barry Mazur asked me a week ago, which via some arguments reduced to 
-an easy-to-state question about classical modular forms of level one.
-Thus this project is particularly accessible.
+This is a question of Barry Mazur about classical modular forms and
+Hida theory.  It involves gathering data about a question that Barry
+asked me a week ago, which via some arguments I reduced to a question
+about classical modular forms of level one.
 
 For any prime number $p$ and even integer weight $k>2$, let $d(p,k)$
 be the number of $p$-adic non-unit eigenvalues of the Hecke operator
 $T_p$ acting on the space $S_k(\SL_2(\Z))$ of weight $k$ level $1$
-classical modular forms.  For theoretical reasons (Hida theory and an
-obvious, but perhaps not yet proven, pattern) we are only interested
-in $k\leq (p-3)/2$.  The following is a table of all such
+classical modular forms. We call $d(p,k)$ the {\em ordinary defect},
+since it measures the failure of all newforms to be ordinary.  For
+theoretical reasons (Hida theory and symmetry) we are only
+interested in $k\leq (p-3)/2$.  The following is a table of all such
 $(p,k)$ with $d(p,k)>0$ for $p<389$:
 
 \begin{center}
@@ -82,16 +75,33 @@ $(p,k)$&{\bf defect}\\\hline
 \noindent{\bf The Challenge:} find a way to extend this table up to $p=1024$.
 This will provide data for a new conjecture that Barry Mazur intends to make.
 
-%Include other levels?
 
+
+\begin{remark} Perhaps we could do a similar computation, but with level
+$1$ replaced by level $N$ (?), where maybe we should only consider
+primes $p\nmid N$.  Should we use $\Gamma_1(N)$ or $\Gamma_0(N)$?
+\end{remark}
+
+%Include other levels?
 % goal: 1000; new conjectures
 
 %local rep on local galois barsotti tate group modular curve $X_1(p)$....
 %action of inertia group on neron fiber...
 
 
-\subsection{Congruence for classical higher-weight modular forms}
+\subsection{Congruences and classical higher-weight modular forms}
 
+\subsubsection{Background: the congruence module and number}\label{sec:cong}
+Let $\T \subset \End(S)$ be a Hecke algebra, where $S$ is some space
+of cusp forms.  Suppose $M$ is a $\T$-module that is also of finite
+rank as a $\Z$-module, and $C\subset M$ is a {\em saturated}
+submodule, so $M/C$ is torsion free.  Moreover, suppose that $M_\Q =
+M\tensor\Q$ splits as a direct sum $C_{\Q} \oplus C'_{\Q}$, where
+$C'_{\Q}$ a $\T$-submodule.  Define the the {\em congruence module} of
+$C$ to be the $\T$-module $M/(C+C')$ and the {\em congruence number}
+of $C$ to be $\#(M/(C +C')) \in \Z$.  
+
+\subsection{The Problem}
 % CM forms at end of Hida 1981 paper.  Computed a little, enough to show interesting.
 
 Consider $S=S_k(\Gamma_0(N))$ for some $N,k$, and $S(\Z)=S\cap
@@ -161,7 +171,7 @@ and level $\n$.
 
 
 
-\subsection{Congruence for Hilbert modular forms}
+\subsection{Congruences for Hilbert modular forms}
 
 Let $S_{(2,2)}(\n)$ denote the space of Hilbert modular cusp forms of
 parallel weight $(2,2)$ and level $\n$.  Let $\T$ be the Hecke algebra
@@ -192,7 +202,7 @@ Hilbert newforms $f \in S_{(2,2)}(\n)$.  What is the relation between
 $c_f$ and $d_f$?
 
 
-\section{The first elliptic curve over $F$ of  rank 3}
+\subsection{The first elliptic curve over $F$ of  rank 3}
 This project is to find the first elliptic curve over $F=\Q(\sqrt{5})$
 of rank 3, assuming all standard conjectures about elliptic curves
 over $F$, i.e,. assuming modularity and the BSD conjecture. 

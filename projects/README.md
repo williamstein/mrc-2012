@@ -1,0 +1,1 @@
+I've been posting a [compiled pdf here](snowbird-project.pdf).
