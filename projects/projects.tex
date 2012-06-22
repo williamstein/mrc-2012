@@ -72,14 +72,15 @@ $(p,k)$&{\bf defect}\\\hline
 \end{center}
 
 \vspace{1em}
-\noindent{\bf The Challenge:} find a way to extend this table up to $p=1024$.
+\noindent{\bf The Challenge:} find a way to extend this table for all $p<1000$.
 This will provide data for a new conjecture that Barry Mazur intends to make.
+\vspace{1em}
 
 
 
 \begin{remark} Perhaps we could do a similar computation, but with level
-$1$ replaced by level $N$ (?), where maybe we should only consider
-primes $p\nmid N$.  Should we use $\Gamma_1(N)$ or $\Gamma_0(N)$?
+$1$ replaced by level $N$, where maybe we should only consider
+primes $p\nmid N$.  
 \end{remark}
 
 %Include other levels?
@@ -108,30 +109,34 @@ Consider $S=S_k(\Gamma_0(N))$ for some $N,k$, and $S(\Z)=S\cap
 \Z[[q]]$.  For each of newform $f\in S$ (up to Galois conjugation) of
 level dividing $N$, let $C_f \subset S$ be the $\T$-submodule of $S$
 spanned by the images in $S$ via degeneracy maps of all Galois
-conjugates of $f$.  Define the congruence module and number of $f$ as
-in Section~\ref{sec:cong} to be the corresponding values for $C_f$ as
-a submodule of $S(\Z)$.  Denote by $c_f$ the congruence number.
+conjugates of $f$.  Define the congruence module and congruence number
+of $f$ as in Section~\ref{sec:cong} to be the corresponding values for
+$C_f$ as a submodule of $S(\Z)$.  Denote by $c_f$ the congruence
+number of $f$.
 
 Given two newforms $f,g \in S$ as above such that $C_f \neq C_g$, define
 the congruence module and congruence number of this pair to be
-the congruence module and number of $C_f$ in the $\T$-module
-$S(\Z)\cap((C_f + C_g)\tensor\Q)$.
+the congruence module and number of $C_f$ in the $\T$-module  
+$S(\Z)\cap((C_f + C_g)\tensor\Q)$. This is a number that measures 
+congruences between $f$ and $g$.
 
-Let $\cS = \cS_k(\Gamma_0(N))$, for some $N,k$ be the complex vector
-space of cuspidal modular symbols of weight $k$ and level $N$, and let
-$S(\Z) = \cS_k(\Gamma_0(N);\Z)$ be the submodule of integral cuspidal
-modular symbols.  There is a perfect $\T$-invariant duality $\cS
-\times (S \oplus \overline{S}) \to \C$ given by integration, hence for
-each newform $f$ and module $C_f$ as above, there is a submodule $D_f
-\in S(\Z)$ (note that $\rank_{\Z} D_f = 2\rank_{\Z} C_f$).  Denote by
-$d_f$ the congruence number of this submodule.
+For any $N$ and $k\geq 2$, let $\cS = \cS_k(\Gamma_0(N))$ be the
+complex vector space of cuspidal modular symbols of weight $k$ and
+level $N$, and let $S(\Z) = \cS_k(\Gamma_0(N);\Z)$ be the submodule of
+integral cuspidal modular symbols.  There is a perfect $\T$-invariant
+duality $\cS \times (S \oplus \overline{S}) \to \C$ given by
+integration, hence for each newform $f$ and module $C_f$ as above,
+there is a corresponding submodule $D_f \subset S(\Z)$ (note that
+$\rank_{\Z} D_f = 2\rank_{\Z} C_f$).  Denote by $d_f$ the congruence
+number of this submodule.
 
-In the case when $f$ is new of level $N$ has weight $2$, and has
-rational Fourier coefficients, I think $\sqrt{d_f}$ is the usual
-modular degree of the optimal elliptic curve attached to $f$.
-In this case, Ken Ribet proved that $\sqrt{d_f} \mid c_f$, 
-and Agashe, Ribet and I formulate and prove a generalization
-of this theorem to $f$ with nonrational Fourier coefficients in
+In the case when $f$ is new of level $N$, has weight $2$, and has
+rational Fourier coefficients (so $f$ corresponds to an elliptic curve
+over $\Q$), I think $\sqrt{d_f}$ is the usual modular degree of the
+optimal elliptic curve attached to $f$.  In this case, Ken Ribet
+proved that $\sqrt{d_f} \mid c_f$, and Agashe, Ribet and I formulate
+and prove a generalization of this theorem to $f$ with nonrational
+Fourier coefficients in
 \url{http://wstein.org/papers/ars-congruence/}.
 
 When I was a grad student it seems that I computed the first ever
@@ -141,8 +146,9 @@ $S_2(\Gamma_0(54))$.
 
 \vspace{1em}
 \noindent{\bf The Challenge:} Compute the numbers $c_f$ and $d_f$ for
-some forms of weight $\geq 4$.  Is there a relation between
-them as is the case for weight $2$?  
+some newforms of weight $\geq 4$.  Is there a relation between
+them as is the case in weight $2$?  
+\vspace{1em}
 
 
 It is a theorem of Ken Ribet (that is proved in Mazur's Eisenstein
@@ -150,63 +156,71 @@ ideal paper) that if $\T$ is the Hecke algebra associated to
 $S_2(\Gamma_0(N))$, then the scheme $\Spec(\T)$ is connected.  At
 least when $N$ is prime, I think what this amounts to is that the
 following graph is connected: the vertices correspond to Galois orbits
-of newforms $f$ and two newform classes $f$ and $g$ are connected by
+of newforms $f$ and the orbits of $f$ and $g$ are connected by
 an edge whenever $f$ and $g$ have congruence number bigger than $1$.
-Ribet's argument doesn't seem to generalize to higher weight. 
+Ribet's argument doesn't seem to generalize to higher weight, but I
+suspect the conclusion still holds...
 
 \vspace{1em}
 \noindent{\bf The Challenge:} Compute the graph defined above for
 $S_k(\Gamma_0(N))$ for $k\geq 4$ and various $N$.
+\vspace{1em}
 
 
 \section{Questions about Hilbert modular forms}
 
-Henceforth $F=\Q(\sqrt{5})$.
-
-The {\em modularity conjecture} asserts that the set of $L$-functions
-$L(E,s)$ attached to elliptic curves over $F$ of conductor an ideal
-$\n$ of $F$ is the same as the set $L(f,s)$ of $L$-functions attached
-to rational cuspidal Hilbert modular forms of parallel weight $(2,2)$
-and level $\n$.
+Let $F=\Q(\sqrt{5})$.  The {\em modularity conjecture} asserts that
+the set of $L$-functions $L(E,s)$ attached to elliptic curves over $F$
+of conductor an ideal $\n$ of $F$ is the same as the set $L(f,s)$ of
+$L$-functions attached to rational cuspidal Hilbert modular newforms of
+parallel weight $(2,2)$ and level $\n$.
 
 
 
 \subsection{Congruences for Hilbert modular forms}
 
-Let $S_{(2,2)}(\n)$ denote the space of Hilbert modular cusp forms of
-parallel weight $(2,2)$ and level $\n$.  Let $\T$ be the Hecke algebra
-acting on $S_{(2,2)}(\n)$.   Dembele's algorithm involves a finite
+Let $S_{(2,2)}(\Gamma_0(\n))$ denote the space of Hilbert modular cusp forms of
+parallel weight $(2,2)$ and level $\Gamma_0(\n)$.  Let $\T$ be the Hecke algebra
+acting on $S_{(2,2)}(\Gamma_0(\n))$.   Dembele's algorithm involves a finite
 rank free $\Z$-module that I'll call $X$ on which $\T$ acts. 
-This is the module with basis certain orbits for an action on $\P^1(\cO/\n)$.
-Given a newform $f\in S_{(2,2)}(\n)$, there is a corresponding
+(This is a module with basis certain orbits of $\P^1(\cO/\n)$.)
+Given a newform $f\in S_{(2,2)}(\Gamma_0(\n))$, there is a corresponding
 submodule $C_f \subset X$, and we may consider the congruence module
 of $f$ 
 and congruence number $c_f$ of $f$ inside $X$.
 
 \vspace{1em}
 \noindent{\bf The Challenge:} Compute the number $c_f$ for some Hilbert
-newforms $f \in S_{(2,2)}(\n)$.
+newforms $f \in S_{(2,2)}(\Gamma_0(\n))$.
+\vspace{1em}
 
 
-It is annoying that the definition of $c_f$ above depends on some
-perhaps {\em ad hoc} algorithm.  Here is a more intrinsic object that
-measures congruences.  The Hecke algebra $\T$ itself is a finite rank
-$\Z$-module.  Using Dembele's algorithm we can at least compute the
-algebra generated by all $T_{\p}$ with $\p\nmid\n$.  Just as above,
-given a newform $f$ there is saturated submodule $D_f$ of $\T$
-associated to $f$.    Let $d_f$ be the congruence number of $D_f$.
+The definition of $c_f$ above depends on some perhaps {\em ad hoc}
+algorithm.  Here is a more intrinsic definition.  The Hecke algebra
+$\T$ is a finite rank $\Z$-module.  Using Dembele's algorithm we can
+at least compute the algebra generated by all $T_{\p}$ with
+$\p\nmid\n$.  Just as above, given a newform $f$ there is saturated
+submodule $D_f$ of $\T$ associated to $f$.  Let $d_f$ be the
+congruence number of $D_f$.
 
 \vspace{1em}
 \noindent{\bf The Challenge:} Compute the number $d_f$ for some
-Hilbert newforms $f \in S_{(2,2)}(\n)$.  What is the relation between
+Hilbert newforms $f \in S_{(2,2)}(\Gamma_0(\n))$.  What is the relation between
 $c_f$ and $d_f$?
+\vspace{1em}
+
+
+When $f$ has rational Fourier coefficients, there is a corresponding
+isogeny class of elliptic curves, and we could also study the degrees
+of maps from Shimura curves to those elliptic curves.   However, I still
+don't know how to explicitly compute any of those degrees yet. 
 
 
 \subsection{The first elliptic curve over $F$ of  rank 3}
 This project is to find the first elliptic curve over $F=\Q(\sqrt{5})$
 of rank 3, assuming all standard conjectures about elliptic curves
-over $F$, i.e,. assuming modularity and the BSD conjecture. 
-The current rank records are:
+over $F$, i.e,. assuming modularity and the Birch and Swinnerton-Dyer
+conjecture.  The current rank records are:
 \begin{center}
 \begin{tabular}{|l|l|l|l|}\hline
 Rank & Norm(N) & Equation & Person\\\hline
@@ -223,10 +237,11 @@ Rank & Norm(N) & Equation & Person\\\hline
 \vspace{1em}
 \noindent{\bf The Challenge:} 
 Enumerate all {\em rational} newforms of norm conductor up to
-$26,569=163^2$ to sufficient precision so that for each we can compute
+$26569=163^2$ to sufficient precision so that for each we can compute
 $r_f = \ord_{s=1}(L(f,s))$.  If there is an $f$ with norm conductor
 $<26569$ with $\ord_{s=1}(L(f,s))=3$, find a corresponding Weierstrass
 equation.
+\vspace{1em}
 
 
 \end{document}
