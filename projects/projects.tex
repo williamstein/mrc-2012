@@ -1,18 +1,24 @@
 \documentclass{article}
 \title{Projects for 2012 MRC Arithmetic Statistics Workshop}
 \usepackage[margin=1.5in]{geometry}
+\usepackage{hyperref}
 \include{macros}
+
 \author{William Stein}
 \begin{document}
 \maketitle
 \begin{abstract}
-This is a list of several projects that we will attack during the
-Snowbird workshop.
+  We give mathematical descriptions of the projects that we will
+  attack during the Snowbird workshop.  Two projects involve classical
+  modular forms, and two involve Hilbert modular forms for the field
+  $\Q(\sqrt{5})$. There is more information about resources for
+  sutdying these problems in the wiki
+  \url{https://github.com/williamstein/mrc-2012/wiki}.
 \end{abstract}
 
 \tableofcontents
 
-\section*{Background Remarks on Computing Resources}
+\section*{Computing Resources}
 
 \begin{enumerate}
 \item I have a cluster with 120 cores and 640GB RAM total at
@@ -26,7 +32,8 @@ Snowbird workshop.
 \end{enumerate}
 
 
-\section{A Question of Barry Mazur about classical modular forms}
+\section{Questions about classical modular forms}
+\subsection{A question of Barry Mazur about classical modular forms and Hida theory}
 
 This involves gathering arithmetic statistics about a question that
 Barry Mazur asked me a week ago, which via some arguments reduced to 
@@ -34,10 +41,52 @@ an easy-to-state question about classical modular forms of level one.
 Thus this is particularly accessible.
 
 
-\section{The first elliptic curve over $\Q(\sqrt{5})$ of rank 3}
-This project is to find the first elliptic curve over $F=\Q(\sqrt{5})$ of rank 3,
-assuming all standard conjectures about elliptic curves over $F$, i.e,. assuming
-modularity and the BSD conjecture.  The outline is:
+Include other levels?
+
+% goal: 1000; new conjectures
+
+%local rep on local galois barsotti tate group modular curve $X_1(p)$....
+%action of inertia group on neron fiber...
+
+
+\subsection{Structure of singular points of $\Spec(\T)$ for classical higher weight modular forms}
+
+% CM forms at end of Hida 1981 paper.  Computed a little, enough to show interesting.
+
+
+
+\section{Questions about Hilbert modular forms}
+
+Henceforth $F=\Q(\sqrt{5})$.
+
+The {\em modularity conjecture} asserts that the set of $L$-functions
+$L(E,s)$ attached to elliptic curves over $F$ of conductor an ideal
+$\n$ of $F$ is the same as the set $L(f,s)$ of $L$-functions attached
+to rational cuspidal Hilbert modular forms of parallel weight $(2,2)$
+and level $\n$.
+
+
+
+\subsection{The congruence modulus for Hilbert modular forms}
+
+Let $S_{(2,2)}(\n)$ denote the space of Hilbert modular cusp forms of
+parallel weight $(2,2)$ and level $\n$.  Let $\T$ be the Hecke algebra
+acting on $S_{(2,2)}(\n)$.  
+
+Suppose $M$ is a $\T$-module that is also of
+finite rank as a $\Z$-module, and $N\subset M$ is a {\em saturated}
+submodule, so $M/N$ is torsion free.  Moreover, suppose that
+$M_\Q = M\tensor\Q$ splits as a direct sum $N_{\Q} \oplus N'_{\Q}$,
+where $N'_{\Q}$ a $\T$-submodule. 
+Define the {\em congruence modulus} of $N$ to be ...
+
+
+
+\section{The first elliptic curve over $F$ of  rank 3}
+This project is to find the first elliptic curve over $F=\Q(\sqrt{5})$
+of rank 3, assuming all standard conjectures about elliptic curves
+over $F$, i.e,. assuming modularity and the BSD conjecture.  The
+outline is:
 \begin{enumerate}
 \item Enumerate all rational newforms of norm conductor up to $26569=163^2$ to
 sufficient precision that we can compute $\ord_{s=1}(L(f,s))$.
@@ -58,7 +107,6 @@ Rank & Norm(N) & Equation & Person\\\hline
 \\\hline
 \end{tabular}
 \end{center}
-
 
 
 \end{document}

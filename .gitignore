@@ -30,3 +30,4 @@ pip-log.txt
 *.pdf
 *.synctex.gz
 *.toc
+*.out
