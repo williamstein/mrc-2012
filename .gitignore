@@ -1,5 +1,5 @@
 *.py[co]
-
+auto
 # Packages
 *.egg
 *.egg-info
@@ -25,3 +25,8 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+*.aux
+*.log
+*.pdf
+*.synctex.gz
+*.toc

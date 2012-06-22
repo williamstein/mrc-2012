@@ -1,0 +1,64 @@
+\documentclass{article}
+\title{Projects for 2012 MRC Arithmetic Statistics Workshop}
+\usepackage[margin=1.5in]{geometry}
+\include{macros}
+\author{William Stein}
+\begin{document}
+\maketitle
+\begin{abstract}
+This is a list of several projects that we will attack during the
+Snowbird workshop.
+\end{abstract}
+
+\tableofcontents
+
+\section*{Background Remarks on Computing Resources}
+
+\begin{enumerate}
+\item I have a cluster with 120 cores and 640GB RAM total at
+  University of Washington, which we can use.  
+
+\item I have an account on a supercomputer running Linux with about
+  15,000 hours allocated, which we can use.  These use Sun Grid
+  Engine, so you submit a job (some script to run), and it runs within
+  about 1 day, usually.  (Note that 15,000 hours is actually the same
+  as what my cluster can do in 5 days.  But maybe we can use 15,000 hours in one day on the supercomputer.)
+\end{enumerate}
+
+
+\section{A Question of Barry Mazur about classical modular forms}
+
+This involves gathering arithmetic statistics about a question that
+Barry Mazur asked me a week ago, which via some arguments reduced to 
+an easy-to-state question about classical modular forms of level one.
+Thus this is particularly accessible.
+
+
+\section{The first elliptic curve over $\Q(\sqrt{5})$ of rank 3}
+This project is to find the first elliptic curve over $F=\Q(\sqrt{5})$ of rank 3,
+assuming all standard conjectures about elliptic curves over $F$, i.e,. assuming
+modularity and the BSD conjecture.  The outline is:
+\begin{enumerate}
+\item Enumerate all rational newforms of norm conductor up to $26569=163^2$ to
+sufficient precision that we can compute $\ord_{s=1}(L(f,s))$.
+\item Compute $r_f = \ord_{s=1}(L(f,s))$.
+\item If there is an $f$ with norm conductor $<26569$ with $\ord_{s=1}(L(f,s))=3$, find a corresponding Weierstrass equation.
+\item Collect statistics about the integers $r_f$.
+\end{enumerate}
+The current rank records are:
+\begin{center}
+\begin{tabular}{|l|l|l|l|}\hline
+Rank & Norm(N) & Equation & Person\\\hline
+0 & 31 (prime) &  $[1,a+1,a,a,0]$ &  Dembele \\
+1 & 199 (prime) &  $[0,-a-1,1,a,0]$ &  Dembele \\
+2 & 1831 (prime) &  $[0,-a,1,-a-1,2a+1]$ & Dembele \\
+3 & 26,569$\,=163^2$ &  $[0,0,1,-2,1]$ & Elkies \\
+4 & 1,209,079 (prime) & $[1, -1, 0, -8-12a, 19+30a]$ & Elkies \\
+5 & 64,004,329 & $[0, -1, 1, -9-2a, 15+4a]$ & Elkies
+\\\hline
+\end{tabular}
+\end{center}
+
+
+
+\end{document}
