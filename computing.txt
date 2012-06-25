@@ -59,3 +59,5 @@ Merge made by the 'recursive' strategy.
  README.md |    5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 blastoff:mrc-2012 wstein$ git push
+
+ETc. 
