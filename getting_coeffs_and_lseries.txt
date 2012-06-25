@@ -1,0 +1,42 @@
+Here is how to go from a rational eigenvector (project group A) to obtaining:
+    (1) lots of Hecke eigenvalues a_p
+    (2) the L-series object.
+
+This uses code in the psage library, rather than the patches to Sage.
+
+First, the input.  We start with a subspace of a Hilbert modular forms space.
+I'll make up a random example, say norm conductor 199:
+
+sage: from psage.modform.hilbert.sqrt5.hmf import *
+sage: H = HilbertModularForms(F.primes_above(199)[0])
+sage: t = H.hecke_matrix(2)
+sage: f = t.charpoly().factor(); f
+(x - 5) * (x - 3) * x * (x + 4)
+sage: S = (t-3).kernel(); S
+Vector space of degree 4 and dimension 1 over Rational Field
+Basis matrix:
+[ 1  1 -1 -1]
+sage: V = EllipticCurveFactor(H.subspace(S), 0)  # 0 -- doesn't matter; used for sorting
+sage: V
+Isogeny class of elliptic curves over QQ(sqrt(5)) attached to form number 0 in Hilbert modular forms of dimension 4, level 3*a+13 (of norm 199=199) over QQ(sqrt(5))   
+
+This V has a method that will "very efficiently" (given how hard the
+problem is) compute lots of a_p.  Here it is -- it is slow when
+computing and caching the elements of norm up to the bound, but fast
+next time (and for any level):
+
+sage: V.aplist(100)
+[3, -2, 0, -4, 0, 0, -4, -6, 6, 10, -4, -6, 4, 2, 4, -2, 14, -14, 8, -12, 10, 8, 14, 6]
+sage: V.aplist(100)
+[3, -2, 0, -4, 0, 0, -4, -6, 6, 10, -4, -6, 4, 2, 4, -2, 14, -14, 8, -12, 10, 8, 14, 6]
+
+Here are the primes that index the above a_p, by the way:
+
+sage: primes_of_bounded_norm(100)
+[2, 5a, 3, 11a, 11b, 19a, 19b, 29a, 29b, 31a, 31b, 41a, 41b, 7, 59a, 59b, 61a, 61b, 71a, 71b, 79a, 79b, 89a, 89b]
+
+What happens at bad primes?  You get "?".
+
+sage: V.aplist(200)
+[3, -2, 0, -4, 0, 0, -4, -6, 6, 10, -4, -6, 4, 2, 4, -2, 14, -14, 8, -12, 10, 8, 14, 6, -6, -10, 4, -14, -16, 18, -4, 22, -10, -12, 20, 0, 22, 4, 16, 2, -14, 18, -8, '?', -4]
+
