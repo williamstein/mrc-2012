@@ -26,3 +26,24 @@ Quaternionic module of dimension 110, level 60*a-18 (of norm 4356=2^2*3^2*11^2) 
 sage: H.hecke_matrix(F.primes_above(5)[0]).fcp()                                       
 (x - 6) * (x - 4)^2 * x^2 * (x + 3)^4 * (x + 4)^4 * (x - 3)^6 * (x - 2)^7 * (x + 1)^8 * (x - 1)^10 * (x + 2)^10 * (x^2 - 3*x + 1) * (x^2 - x - 11) * (x^2 + x - 11) * (x^2 + 3*x + 1) * (x^2 - 4*x - 1)^2 * (x^2 - 2*x - 4)^2 * (x^2 - 2*x - 2)^2 * (x^2 + 2*x - 4)^2 * (x^2 + 2*x - 2)^2 * (x^2 + 4*x - 1)^2 * (x^2 - 12)^4 * (x^2 - 3)^4 * (x^4 - 2*x^3 - 11*x^2 + 22*x + 1) * (x^4 + 2*x^3 - 11*x^2 - 22*x + 1)
 
+
+-----
+
+Using GIT:
+
+blastoff:mrc-2012 wstein$ git add computing.txt 
+blastoff:mrc-2012 wstein$ git commit -a -v
+[master 917de45] Add a file about how to compute stuff.
+ 1 file changed, 28 insertions(+)
+ create mode 100644 computing.txt
+blastoff:mrc-2012 wstein$ git pull
+remote: Counting objects: 8, done.
+remote: Compressing objects: 100% (4/4), done.
+remote: Total 6 (delta 4), reused 4 (delta 2)
+Unpacking objects: 100% (6/6), done.
+From github.com:williamstein/mrc-2012
+   0956e00..27baf09  master     -> origin/master
+Merge made by the 'recursive' strategy.
+ README.md |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+blastoff:mrc-2012 wstein$ git push
