@@ -1,0 +1,28 @@
+ssh wstein@geom.math.washington.edu
+
+cd /mnt/SSD1/mrc
+
+. set_path
+
+Verify that you got it:
+
+wstein@geom:/mnt/SSD1/mrc$ which sage
+/mnt/SSD1/mrc/sage-5.1.beta6/sage
+
+cd sage-5.1.beta6/devel/sage/sage/modular/hilbert/
+
+Try it:
+
+sage: from sage.modular.hilbert.sqrt5_hmf import F, QuaternionicModule
+sage: H = QuaternionicModule(3 * F.prime_above(31))
+sage: F.primes_above(11)               
+[Fractional ideal (-3*a + 2), Fractional ideal (-3*a + 1)]
+sage: H.hecke_matrix(F.primes_above(11)[1]).fcp()
+(x - 12) * (x - 2)^2 * (x + 4)^3
+sage: H = QuaternionicModule(F.prime_above(2)*F.prime_above(3)*F.primes_above(11)[0]^2)
+sage: H                                                                                
+Quaternionic module of dimension 110, level 60*a-18 (of norm 4356=2^2*3^2*11^2) over QQ(sqrt(5))
+
+sage: H.hecke_matrix(F.primes_above(5)[0]).fcp()                                       
+(x - 6) * (x - 4)^2 * x^2 * (x + 3)^4 * (x + 4)^4 * (x - 3)^6 * (x - 2)^7 * (x + 1)^8 * (x - 1)^10 * (x + 2)^10 * (x^2 - 3*x + 1) * (x^2 - x - 11) * (x^2 + x - 11) * (x^2 + 3*x + 1) * (x^2 - 4*x - 1)^2 * (x^2 - 2*x - 4)^2 * (x^2 - 2*x - 2)^2 * (x^2 + 2*x - 4)^2 * (x^2 + 2*x - 2)^2 * (x^2 + 4*x - 1)^2 * (x^2 - 12)^4 * (x^2 - 3)^4 * (x^4 - 2*x^3 - 11*x^2 + 22*x + 1) * (x^4 + 2*x^3 - 11*x^2 - 22*x + 1)
+
