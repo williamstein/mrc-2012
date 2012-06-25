@@ -1,11 +1,14 @@
-Here is how to go from a rational eigenvector (project group A) to obtaining:
-    (1) lots of Hecke eigenvalues a_p
-    (2) the L-series object.
+This file explains how to go from a rational eigenvector (project
+group A) to obtaining (project group B):
+
+    (1) lots of Hecke eigenvalues a_p,
+
+    (2) the L-series object and hence the analytic rank.
 
 This uses code in the psage library, rather than the patches to Sage.
 
-First, the input.  We start with a subspace of a Hilbert modular forms space.
-I'll make up a random example, say norm conductor 199:
+First, the input.  We start with a subspace of a Hilbert modular forms
+space.  For illustration, we use norm conductor 199:
 
 sage: from psage.modform.hilbert.sqrt5.hmf import *
 sage: H = HilbertModularForms(F.primes_above(199)[0])
@@ -27,8 +30,6 @@ next time (and for any level):
 
 sage: V.aplist(100)
 [3, -2, 0, -4, 0, 0, -4, -6, 6, 10, -4, -6, 4, 2, 4, -2, 14, -14, 8, -12, 10, 8, 14, 6]
-sage: V.aplist(100)
-[3, -2, 0, -4, 0, 0, -4, -6, 6, 10, -4, -6, 4, 2, 4, -2, 14, -14, 8, -12, 10, 8, 14, 6]
 
 Here are the primes that index the above a_p, by the way:
 
@@ -39,4 +40,42 @@ What happens at bad primes?  You get "?".
 
 sage: V.aplist(200)
 [3, -2, 0, -4, 0, 0, -4, -6, 6, 10, -4, -6, 4, 2, 4, -2, 14, -14, 8, -12, 10, 8, 14, 6, -6, -10, 4, -14, -16, 18, -4, 22, -10, -12, 20, 0, 22, 4, 16, 2, -14, 18, -8, '?', -4]
+
+Next we compute the LSERIES:
+
+sage: from psage.lseries.eulerprod import LSeries
+sage: L = LSeries(V, prec=10)   # prec=10 so use less a_p in trying to find a_p for bad primes
+sage: L.taylor_series(1, 4, prec=10)
+0.93 + 0.53*z - 0.68*z^2 + 0.30*z^3 + O(z^4)
+sage: L.analytic_rank(prec=10)
+0
+
+Consider the other two curves:
+
+sage: S = t.kernel()
+sage: V = EllipticCurveFactor(H.subspace(S), 0)
+sage: L = LSeries(V, prec=10)
+sage: L.analytic_rank(prec=10)
+0
+
+Here's the curve of rank 1 -- from the top:
+
+sage: from psage.modform.hilbert.sqrt5.hmf import *
+sage: from psage.lseries.eulerprod import LSeries
+sage: H = HilbertModularForms(F.primes_above(199)[0])
+sage: t = H.hecke_matrix(2)
+sage: S = (t+4).kernel()
+sage: V = EllipticCurveFactor(H.subspace(S), 0)
+sage: L = LSeries(V, prec=10)
+sage: L.analytic_rank(prec=10)
+1
+sage: L.taylor_series(1, 4, prec=10)
+0.00 + 0.66*z + 0.38*z^2 - 0.59*z^3 + O(z^4)
+
+This is no easy way in Sage right now to figure out what the bad
+primes that were used actually were... 
+
+
+
+
 
