@@ -1,5 +1,17 @@
 ssh wstein@geom.math.washington.edu
 
+------------
+Use "screen"!
+
+
+screen
+
+screen -x
+
+man screen
+
+
+-----------
 cd /mnt/SSD1/mrc
 
 . set_path
