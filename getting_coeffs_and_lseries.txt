@@ -79,3 +79,37 @@ primes that were used actually were...
 
 
 
+Try the 163 example:
+--------------------
+
+sage: from psage.modform.hilbert.sqrt5.hmf import *
+sage: time H = HilbertModularForms(163)
+Time: CPU 0.18 s, Wall: 0.18 s
+sage: time t = H.hecke_matrix(2)
+Time: CPU 0.03 s, Wall: 0.03 s
+sage: time S = (t+4).kernel()
+Time: CPU 1.51 s, Wall: 1.53 s
+sage: S.dimension()
+1
+sage: V = EllipticCurveFactor(H.subspace(S), 0)
+sage: from psage.lseries.eulerprod import LSeries
+
+
+
+-----------------
+
+Computing the cache:
+
+def compute_cache(B):
+    from psage.modform.hilbert.sqrt5.sqrt5 import hecke_elements, primes_of_bounded_norm
+    @parallel(8)
+    def f(P):
+        hecke_elements(P)
+        return P.norm()
+
+    for X in f(primes_of_bounded_norm(B)):
+        print X
+
+... but running this results in: 
+
+10708 wstein    20   0 62.0g 101m 8848 R  100  0.1   0:09.73 python
