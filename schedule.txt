@@ -1,0 +1,16 @@
+Monday, June 25, 2012:
+----------------------
+
+[ ] stein: intro to each project
+[ ] "vote" on which project to do first
+[ ] intro talks needed (depends on project chosen)?
+      - sage
+      - git
+      - modular forms?
+      - command line
+
+Tuesday, June 26, 2012:
+-----------------------
+
+[ ] 
+
