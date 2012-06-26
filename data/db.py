@@ -44,6 +44,7 @@ class RationalNewform(Base):
     id = Column(Integer, primary_key=True)
     space_id = Column(Integer, ForeignKey("spaces.id"))
     vector = Column(String)
+    dual_vector = Column(String)
     space = relationship("Space", backref=backref("rational_newforms", order_by=id))
     __table_args__ = (
         UniqueConstraint(space_id, vector),
@@ -129,17 +130,20 @@ def canonically_scale(v):
 def ns_str(t):
     return ''.join(str(t).split())
 
-def store_rational_newform(s, M, v):
+def store_rational_newform(s, M, v, vdual):
     """
     M = ambient Hilbert modular forms space
     v = rational eigenvector
+    vdual = dual eigenvector
     s = session
     """
     x,y,z = ideal_to_tuple(M.level())
     V = s.query(Space).filter(Space.x==x).filter(Space.y==y).filter(Space.z==z).one()
     f = RationalNewform()
     f.vector = ns_str(canonically_scale(v))
+    f.dual_vector = ns_str(canonically_scale(vdual))
     V.rational_newforms.append(f)
+    return f
 
 def get_space(s, N):
     """
@@ -179,15 +183,19 @@ def compute_spaces(s, B1, B2):
         if I.norm() >= B1:
             store_space(s, HilbertModularForms(I))
 
-def compute_rational_eigenvectors(s, N):
+def compute_rational_eigenvectors(s, N, bound=4096):
     """
     N = ideal, the level
-    We assume that levels of all divisors of N have already been computed, so we
-    already know all oldforms.
-    This calls the "inefficient" elliptic_curve_factors method on the Hilbert
+    bound = compute this many a_p and use this many for ruling out oldforms
+    
+    This functions calls the "inefficient" elliptic_curve_factors method on the Hilbert
     modular forms space of level N, which has some problems:
         (1) some of the returned factors may actually be *old*
         (2) it is potentially very slow, since it computes the factors of all dimensions
+
+    WARNING!: Just *loading* from disk the pre-computed elts of norm pi_p up to
+    norm 4096 takes nearly *20 minutes*, but afterwards computing particular
+    aplists for any form takes way under 20 *seconds*.
     """
     # First do a query to see if we already know *all* of the rational
     # eigenvectors.
@@ -195,5 +203,35 @@ def compute_rational_eigenvectors(s, N):
         print "We already know all rational eigenvectors at level %s"%N
         return 
     H = get_space(s, N)
-    
-    
+    M = H.hmf()
+    from psage.modform.hilbert.sqrt5.hmf import primes_of_bounded_norm
+    primes = primes_of_bounded_norm(bound)
+    num_forms = 0
+    for E in M.elliptic_curve_factors():
+        if not N.is_prime():
+            # worry about E possibly actually being old
+            raise NotImplementedError
+        f = store_rational_newform(s, M, E._S.basis()[0], E.dual_eigenvector())
+        num_forms += 1
+        print "*"*80
+        print "form %s"%num_forms
+        print "*"*80
+        # store eigenvalues
+        v = E.aplist(bound)
+        for i in range(len(v)):
+            if v[i] != '?':
+                f.store_eigenvalue(primes[i], int(v[i]))
+    H.nf_bound = num_forms
+    s.commit()
+              
+def compute_rational_eigenvectors_of_prime_level(s, B1, B2, bound=4096):
+    B1 = max(2,B1)
+    v = F.ideals_of_bdd_norm(B2)
+    for N in sum([z for _, z in v.iteritems()],[]):
+        if N.is_prime() and N.norm() >= B1:
+            print "*"*80
+            print N.norm()
+            print "*"*80
+            compute_rational_eigenvectors(s, N, bound=bound)
+            
+
