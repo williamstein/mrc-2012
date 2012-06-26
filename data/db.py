@@ -84,7 +84,7 @@ def session():
     return Session()
 
 ########################################################
-# Use the database
+# Convenience functions to use the database
 ########################################################
 from sage.all import QQ, NumberField, polygen, dumps, gcd
 from sage.rings.all import is_Ideal
@@ -106,7 +106,6 @@ def fast_ideal(P):
         P = psage.number_fields.sqrt5.prime.Prime(P)
     return P
     
-
 def store_space(s, H):
     """
     s = session
@@ -120,20 +119,6 @@ def store_space(s, H):
     s.add(V)
     s.commit()
 
-def store_spaces(s, B1, B2):
-    """
-    Compute basic data about all spaces in the given range of levels.
-    
-    s = session
-    B1, B2 = integers
-    """
-    B1 = max(2,B1)
-    from psage.modform.hilbert.sqrt5.hmf import HilbertModularForms
-    v = F.ideals_of_bdd_norm(B2)
-    for I in sum([z for _, z in v.iteritems()],[]):
-        if I.norm() >= B1:
-            store_space(s, HilbertModularForms(I))
-    
 def canonically_scale(v):
     v = v.denominator() * v
     v = v / gcd(v)
@@ -167,5 +152,48 @@ def get_space(s, N):
     return s.query(Space).filter(Space.x==x).filter(Space.y==y).filter(Space.z==z).one()
     
 
+def know_all_rational_eigenvectors(s, N):
+    """
+    Return True if we know all rational eigenvectors of level N.
+
+    This is by definition that nf_bound equals the number of recorded
+    rational newforms.
+    """
+    H = get_space(s, N)
+    return H.nf_bound == len(H.rational_newforms)
+    
+########################################################
+# Computing Data
+########################################################
+def compute_spaces(s, B1, B2):
+    """
+    Compute basic data (dimension) about all spaces in the given range of levels.
+    
+    s = session
+    B1, B2 = integers
+    """
+    B1 = max(2,B1)
+    from psage.modform.hilbert.sqrt5.hmf import HilbertModularForms
+    v = F.ideals_of_bdd_norm(B2)
+    for I in sum([z for _, z in v.iteritems()],[]):
+        if I.norm() >= B1:
+            store_space(s, HilbertModularForms(I))
+
+def compute_rational_eigenvectors(s, N):
+    """
+    N = ideal, the level
+    We assume that levels of all divisors of N have already been computed, so we
+    already know all oldforms.
+    This calls the "inefficient" elliptic_curve_factors method on the Hilbert
+    modular forms space of level N, which has some problems:
+        (1) some of the returned factors may actually be *old*
+        (2) it is potentially very slow, since it computes the factors of all dimensions
+    """
+    # First do a query to see if we already know *all* of the rational
+    # eigenvectors.
+    if know_all_rational_eigenvectors(s, N):
+        print "We already know all rational eigenvectors at level %s"%N
+        return 
+    H = get_space(s, N)
     
     
