@@ -193,12 +193,23 @@ def is_rational_old(s, v, primes, N):
     primes = list of psage primes in F=Q(sqrt(5))
     N = level
     """
+    w = [(P.r, P.p, int(v[i])) for i, P in enumerate(primes) if P.sage_ideal().is_coprime(N)]
     for M in proper_divisors(N):
-        if not know_all_rational_eigenvectors(M):
-            raise RuntimeError, "all newforms of level %s (norm=%s) not known!"%(
-                M, M.norm())
-        
-        
+        if not know_all_rational_eigenvectors(s, M):
+            raise RuntimeError, "all newforms of level %s (norm=%s) not known so we can't tell if this is a rational newform or not"%(M, M.norm())
+        # query the eigenvalues determined by primes above for rational newforms of level M.
+        for f in get_space(s, M).rational_newforms:
+            all_eigs_same = True
+            for r, p, ap in w:
+                if s.query(RationalEigenvalue).filter(
+                         RationalEigenvalue.newform_id==f.id).filter(
+                         RationalEigenvalue.p==p).filter(
+                         RationalEigenvalue.r==r).one().value != ap:
+                    all_eigs_same = False
+                    break
+            if all_eigs_same:
+                return True
+    return False
 
 def compute_rational_eigenvectors(s, N, bound=100):
     """
@@ -229,7 +240,9 @@ def compute_rational_eigenvectors(s, N, bound=100):
             # worry about E possibly actually being old
             v = E.aplist(bound)
             if is_rational_old(s, v, primes, N):
+                print "*"*80
                 print "skipping a form that is old"
+                print "*"*80                
         f = store_rational_newform(s, M, E._S.basis()[0], E.dual_eigenvector())
         num_forms += 1
         print "*"*80
