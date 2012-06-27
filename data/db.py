@@ -87,7 +87,7 @@ def session():
 ########################################################
 # Convenience functions to use the database
 ########################################################
-from sage.all import QQ, NumberField, polygen, dumps, gcd
+from sage.all import QQ, NumberField, polygen, dumps, gcd, parallel, divisors
 from sage.rings.all import is_Ideal
 
 x = polygen(QQ, 'x')
@@ -183,7 +183,24 @@ def compute_spaces(s, B1, B2):
         if I.norm() >= B1:
             store_space(s, HilbertModularForms(I))
 
-def compute_rational_eigenvectors(s, N, bound=4096):
+def proper_divisors(N):
+    return [I for I in divisors(N) if I!=1 and I!=N]
+
+def is_rational_old(s, v, primes, N):
+    """
+    s = session
+    v = a_p's (or ?) as output by E.aplist(...)
+    primes = list of psage primes in F=Q(sqrt(5))
+    N = level
+    """
+    for M in proper_divisors(N):
+        if not know_all_rational_eigenvectors(M):
+            raise RuntimeError, "all newforms of level %s (norm=%s) not known!"%(
+                M, M.norm())
+        
+        
+
+def compute_rational_eigenvectors(s, N, bound=100):
     """
     N = ideal, the level
     bound = compute this many a_p and use this many for ruling out oldforms
@@ -210,7 +227,9 @@ def compute_rational_eigenvectors(s, N, bound=4096):
     for E in M.elliptic_curve_factors():
         if not N.is_prime():
             # worry about E possibly actually being old
-            raise NotImplementedError
+            v = E.aplist(bound)
+            if is_rational_old(s, v, primes, N):
+                print "skipping a form that is old"
         f = store_rational_newform(s, M, E._S.basis()[0], E.dual_eigenvector())
         num_forms += 1
         print "*"*80
@@ -224,7 +243,7 @@ def compute_rational_eigenvectors(s, N, bound=4096):
     H.nf_bound = num_forms
     s.commit()
               
-def compute_rational_eigenvectors_of_prime_level(s, B1, B2, bound=4096):
+def compute_rational_eigenvectors_of_prime_level(s, B1, B2, bound=100):
     B1 = max(2,B1)
     v = F.ideals_of_bdd_norm(B2)
     for N in sum([z for _, z in v.iteritems()],[]):
@@ -233,5 +252,15 @@ def compute_rational_eigenvectors_of_prime_level(s, B1, B2, bound=4096):
             print N.norm()
             print "*"*80
             compute_rational_eigenvectors(s, N, bound=bound)
-            
+
+def compute_rational_eigenvectors_of_prime_level_in_parallel(B1, B2, bound=100, ncpus=8):
+    @parallel(ncpus)
+    def f(N):
+        s = session()
+        compute_rational_eigenvectors(s, N, bound=bound)
+        s.commit()
+    B1 = max(2,B1)
+    v = F.ideals_of_bdd_norm(B2)
+    for X in f([N for N in sum([z for _, z in v.iteritems()],[]) if N.is_prime() and N.norm() >= B1]):
+        print X
 
