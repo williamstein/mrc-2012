@@ -89,6 +89,7 @@ def session():
 ########################################################
 from sage.all import QQ, ZZ, NumberField, polygen, dumps, gcd, parallel, divisors
 from sage.rings.all import is_Ideal
+from psage.modform.hilbert.sqrt5.hmf import primes_of_bounded_norm
 
 x = polygen(QQ, 'x')
 F = NumberField(x**2 - x - 1, 'a')
@@ -232,7 +233,6 @@ def compute_rational_eigenvectors(s, N, bound=100):
         return 
     H = get_space(s, N)
     M = H.hmf()
-    from psage.modform.hilbert.sqrt5.hmf import primes_of_bounded_norm
     primes = primes_of_bounded_norm(bound)
     num_forms = 0
     for E in M.elliptic_curve_factors():
@@ -291,7 +291,6 @@ def compute_more_rational_eigenvalues(s, N, bound):
     M = H.hmf()
     V = M.vector_space()
     I = M._icosians_mod_p1
-    from psage.modform.hilbert.sqrt5.hmf import primes_of_bounded_norm
     for f in H.rational_newforms:
         vector = V(eval(f.vector))
         j = vector.nonzero_positions()[0]
@@ -328,11 +327,17 @@ def compute_more_rational_eigenvalues(s, N, bound):
                 f.store_eigenvalue(P, ap)
 
 def compute_more_rational_eigenvalues_in_parallel(B1, B2, bound, ncpus=8):
+    print "Preloading Hecke operator sets before forking."
+    from psage.modform.hilbert.sqrt5.sqrt5 import hecke_elements
+    for P in primes_of_bounded_norm(bound):
+        print P, len(hecke_elements(P.sage_ideal()))
+    
     @parallel(ncpus)
     def f(N):
         s = session()
         compute_more_rational_eigenvalues(s, N, bound=bound)
         s.commit()
+        
     B1 = max(2,B1)
     v = F.ideals_of_bdd_norm(B2)
     for X in f([N for N in sum([z for _, z in v.iteritems()],[]) if N.norm() >= B1]):
