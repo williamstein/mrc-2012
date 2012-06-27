@@ -256,7 +256,7 @@ def compute_rational_eigenvectors(s, N, bound=100):
     H.nf_bound = num_forms
     s.commit()
               
-def compute_rational_eigenvectors(s, B1, B2, bound=100):
+def compute_rational_eigenvectors_range(s, B1, B2, bound=100):
     B1 = max(2,B1)
     v = F.ideals_of_bdd_norm(B2)
     for N in sum([z for _, z in v.iteritems()],[]):
