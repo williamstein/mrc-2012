@@ -289,7 +289,7 @@ def compute_more_rational_eigenvalues(s, N, bound):
     NrmN = N.norm()
     H = get_space(s, N)
     M = H.hmf()
-    V = M.free_module()
+    V = M.vector_space()
     I = M._icosians_mod_p1
     from psage.modform.hilbert.sqrt5.hmf import primes_of_bounded_norm
     for f in H.rational_newforms:
@@ -309,19 +309,23 @@ def compute_more_rational_eigenvalues(s, N, bound):
                 
             # 2. We do not know it, so compute it -- two cases:
             #   2a. if it has residue char coprime to the level, use dual eigenvector
-
+            ap = None
             if NrmN % P.p != 0:
-                ap = I.hecke_operator_on_basis_element(Ps, i).dot_product(dual_vector))/c
+                ap = I.hecke_operator_on_basis_element(Ps, i).dot_product(dual_vector)/c
             
             #   2b. if it has residue char not coprime to level, use slower direct approaches
             else:
-                if (P*P).divides(N):
+                if (Ps*Ps).divides(N):
                     ap = 0
+                elif not Ps.divides(N):
+                    ap = (vector*M.hecke_matrix(Ps))[j] / vector[j]
                 else:
-                    ap = (vector*M.hecke_matrix(P))[j] / vector[j]
+                    # we have no algorithm directly at present to decide if this is 1 or -1.
+                    print "Can't compute ap for p=%s"%P
             
             # 3. Store eigenvalue ap in the database.
-            f.store_eigenvalue(ap)
+            if ap is not None:
+                f.store_eigenvalue(P, ap)
 
 def compute_more_rational_eigenvalues_in_parallel(B1, B2, bound, ncpus=8):
     @parallel(ncpus)
