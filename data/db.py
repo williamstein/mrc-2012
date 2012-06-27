@@ -228,7 +228,7 @@ def compute_rational_eigenvectors(s, N, bound=100):
     # First do a query to see if we already know *all* of the rational
     # eigenvectors.
     if know_all_rational_eigenvectors(s, N):
-        print "We already know all rational eigenvectors at level %s"%N
+        print "We already know all rational eigenvectors at level %s (of norm %s)"%(N, N.norm())
         return 
     H = get_space(s, N)
     M = H.hmf()
@@ -256,17 +256,17 @@ def compute_rational_eigenvectors(s, N, bound=100):
     H.nf_bound = num_forms
     s.commit()
               
-def compute_rational_eigenvectors_of_prime_level(s, B1, B2, bound=100):
+def compute_rational_eigenvectors(s, B1, B2, bound=100):
     B1 = max(2,B1)
     v = F.ideals_of_bdd_norm(B2)
     for N in sum([z for _, z in v.iteritems()],[]):
-        if N.is_prime() and N.norm() >= B1:
+        if N.norm() >= B1:
             print "*"*80
             print N.norm()
             print "*"*80
             compute_rational_eigenvectors(s, N, bound=bound)
 
-def compute_rational_eigenvectors_of_prime_level_in_parallel(B1, B2, bound=100, ncpus=8):
+def compute_rational_eigenvectors_in_parallel(B1, B2, bound=100, ncpus=8):
     @parallel(ncpus)
     def f(N):
         s = session()
@@ -274,6 +274,6 @@ def compute_rational_eigenvectors_of_prime_level_in_parallel(B1, B2, bound=100, 
         s.commit()
     B1 = max(2,B1)
     v = F.ideals_of_bdd_norm(B2)
-    for X in f([N for N in sum([z for _, z in v.iteritems()],[]) if N.is_prime() and N.norm() >= B1]):
+    for X in f([N for N in sum([z for _, z in v.iteritems()],[]) if N.norm() >= B1]):
         print X
 
