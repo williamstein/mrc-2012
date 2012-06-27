@@ -4,7 +4,7 @@
 
 from sqlalchemy import create_engine
 engine = create_engine('postgresql://mrc@geom.math.washington.edu:6432/mrc', echo=True)
-#engine = create_engine('sqlite:///a.sqlite3')
+#engine = create_engine('sqlite:///')
 
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
@@ -342,4 +342,81 @@ def compute_more_rational_eigenvalues_in_parallel(B1, B2, bound, ncpus=8):
     v = F.ideals_of_bdd_norm(B2)
     for X in f([N for N in sum([z for _, z in v.iteritems()],[]) if N.norm() >= B1]):
         print X
+    
+
+def compute_lseries(s, f, prec):
+    """
+    s = session
+    f = rational newform object
+    prec = bits of precision
+
+    This function computes the L-series attached to the given newform
+    and determine the a_p at the primes of bad reduction (up to the
+    biggest p such that a_p is known) if they are not known, and saves
+    those a_p in the database.  It uses prec bits of precision, and if
+    not enough a_p are known in the database, then it will fail.
+    """
+    
+    #
+    # 1. Get list of primes and the corresponding known a_P (for all P
+    #    up to some bound):
+    #        - query for biggest Norm(P) so we know a_P (separate function)
+    #        - get list of all primes q with Norm(q) <= Norm(P).
+    #        - make another list of primes q such that q exactly divides level
+    #        - query database and get corresponding good a_q, or raise
+    #          error if some missing.
+
+    aplist, primes, unknown = f.known_aplist()
+    # aplist = list of integers of None
+    # primes = list of psage fast primes
+    # unknown = list of ints i such that ap[i] = None
+
+    # Check that the unknown primes all exactly divide the level.
+    level = f.level()
+    for i in unknown:
+        P = primes[i].sage_ideal()
+        if not P.divides(level):
+            raise RuntimeError, "gap in list of eigenvalues a_P; missing good P=%s"%P
+        if (P*P).divides(level):
+            raise RuntimeError, "gap: additive a_P for P=%s not set"%P
+    
+    # 2. For each possibility for bad a_P, construct the L-series,
+    #    making a list of the L-series that actually work.
+    #        - use cartesian product iterator over [[-1,1]]*n
+    #        - we use a custom L-series class deriving from what
+    #          is in psage defined above
+    lseries_that_work = []
+    for bad_ap in cartesian_product([[-1,1]]*len(unknown)):
+        aplist1 = list(aplist)
+        for i in unknown:
+            aplist1[i] = bad_ap[i]
+        try:
+            L = LSeries(level=level, aplist=aplist1, primes=primes, prec=prec)
+            lseries_that_work.append((L, bad_ap))
+        except RuntimeError:
+            pass
+    if len(lseries_that_work) > 1:
+        raise RuntimeError, "%s choices of sign work -- functional equation doesn't nail down one choice."%len(lseries_that_work)
+    if len(lseries_that_work) == 0:
+        raise RuntimeError, "no choices of sign work -- please increase precision!"
+    
+    # 3. If *exactly one* L-series works, save to the database the
+    #    corresponding bad a_p, and return the L-series.  Otherwise,
+    #    raise an error.
+
+    assert len(lseries_that_work) == 1 # I'm paranoid
+    L, bad_ap = lseries_that_work[0]
+    # save missing a_p, which we now know, to the database
+    for i in unknown:
+        f.store_eigenvalue(primes[i], bad_ap[i])
+
+    s.commit()
+    return L
+
+                           
+
+
+    
+
+    
     
