@@ -51,7 +51,7 @@ class RationalNewform(Base):
     )
 
     def store_eigenvalue(self, P, value):
-        self.eigenvalues.append(RationalEigenvalue(P, value))
+        self.eigenvalues.append(RationalEigenvalue(P, int(ZZ(value))))
 
     def __repr__(self):
         return "<Rational newform in %s given by the vector %s>"%(self.space, self.vector)
@@ -87,7 +87,7 @@ def session():
 ########################################################
 # Convenience functions to use the database
 ########################################################
-from sage.all import QQ, NumberField, polygen, dumps, gcd, parallel, divisors
+from sage.all import QQ, ZZ, NumberField, polygen, dumps, gcd, parallel, divisors
 from sage.rings.all import is_Ideal
 
 x = polygen(QQ, 'x')
@@ -277,3 +277,60 @@ def compute_rational_eigenvectors_in_parallel(B1, B2, bound=100, ncpus=8):
     for X in f([N for N in sum([z for _, z in v.iteritems()],[]) if N.norm() >= B1]):
         print X
 
+def compute_more_rational_eigenvalues(s, N, bound):
+    """
+    Computes rational eigenvalues for all rational eigenvectors in the
+    given space up to the given bound.  Commits result to database only
+    if it succeeds at computing all the (good) eigenvalues.
+    """
+    if not know_all_rational_eigenvectors(s, N):
+        print "Can't compute more rational eigenvalues until we know all rational eigenvectors at level %s (of norm %s)"%(N, N.norm())
+        return
+    NrmN = N.norm()
+    H = get_space(s, N)
+    M = H.hmf()
+    V = M.free_module()
+    I = M._icosians_mod_p1
+    from psage.modform.hilbert.sqrt5.hmf import primes_of_bounded_norm
+    for f in H.rational_newforms:
+        vector = V(eval(f.vector))
+        j = vector.nonzero_positions()[0]
+        dual_vector = V(eval(f.dual_vector))
+        i = dual_vector.nonzero_positions()[0]
+        c = dual_vector[i]
+        for P in primes_of_bounded_norm(bound):
+            Ps = P.sage_ideal()
+            # 1. Do we already know this eigenvalue or not?
+            if s.query(RationalEigenvalue).filter(
+                         RationalEigenvalue.newform_id == f.id).filter(
+                         RationalEigenvalue.p == P.p).filter(
+                         RationalEigenvalue.r == P.r).count() > 0:
+                continue
+                
+            # 2. We do not know it, so compute it -- two cases:
+            #   2a. if it has residue char coprime to the level, use dual eigenvector
+
+            if NrmN % P.p != 0:
+                ap = I.hecke_operator_on_basis_element(Ps, i).dot_product(dual_vector))/c
+            
+            #   2b. if it has residue char not coprime to level, use slower direct approaches
+            else:
+                if (P*P).divides(N):
+                    ap = 0
+                else:
+                    ap = (vector*M.hecke_matrix(P))[j] / vector[j]
+            
+            # 3. Store eigenvalue ap in the database.
+            f.store_eigenvalue(ap)
+
+def compute_more_rational_eigenvalues_in_parallel(B1, B2, bound, ncpus=8):
+    @parallel(ncpus)
+    def f(N):
+        s = session()
+        compute_more_rational_eigenvalues(s, N, bound=bound)
+        s.commit()
+    B1 = max(2,B1)
+    v = F.ideals_of_bdd_norm(B2)
+    for X in f([N for N in sum([z for _, z in v.iteritems()],[]) if N.norm() >= B1]):
+        print X
+    
