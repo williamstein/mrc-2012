@@ -433,8 +433,8 @@ def compute_lseries(s, f, prec):
     assert len(lseries_that_work) == 1 # I'm paranoid
     L, bad_ap = lseries_that_work[0]
     # save missing a_p, which we now know, to the database
-    for i in unknown:
-        f.store_eigenvalue(primes[i], bad_ap[i])
+    for i, j in enumerate(unknown):
+        f.store_eigenvalue(primes[j], bad_ap[i])
 
     # store epsilon factor (sign of f.e.) to the database
     # TODO!
@@ -465,16 +465,19 @@ class LSeries(LSeriesAbstract):
     def _local_factor(self, P, prec):
         print P
         T = ZZ['T'].gen()
-        ap = self._aplist[self._primes.index(P)]
-        q = P.norm()
-        p = prime_below(P)
-        f = ZZ(q).ord(p)
-        if P.sage_ideal().divides(self._level):
-            return 1 - ap*(T**f)
-        else:
-            print 1 - ap*(T**f) + q*(T**(2*f))
-            return 1 - ap*(T**f) + q*(T**(2*f))
-        
+        try:
+            ap = self._aplist[self._primes.index(P)]
+            q = P.norm()
+            Ps = P.sage_ideal()
+            p = prime_below(Ps)
+            f = ZZ(q).ord(p)
+            if Ps.divides(self._level):
+                return 1 - ap*(T**f)
+            else:
+                return 1 - ap*(T**f) + q*(T**(2*f))
+        except Exception, msg:
+            print msg
+            raise RuntimeError, msg
 
                            
 
