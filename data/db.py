@@ -33,7 +33,9 @@ class Space(Base):
     def hmf(self):
         from psage.modform.hilbert.sqrt5.hmf import HilbertModularForms
         return HilbertModularForms(tuple_to_ideal((self.x,self.y,self.z)))
-
+    
+    def level(self):
+        return tuple_to_ideal((self.x,self.y,self.z))
 
     def __repr__(self):
         return "<HMF: level=[%s,%s;0,%s], norm=%s, dimension=%s>"%(
@@ -53,6 +55,28 @@ class RationalNewform(Base):
     def store_eigenvalue(self, P, value):
         self.eigenvalues.append(RationalEigenvalue(P, int(ZZ(value))))
 
+    def level(self):
+        return self.space.level()
+
+    def known_aplist(self):
+        """
+        Output is a 2-tuple (aplist, primes,), where:
+            aplist = list of integers of None
+            primes = list of psage fast primes
+        """
+        if len(self.eigenvalues) == 0:
+            return [], [], []
+        B = self.eigenvalues[-1].norm
+        primes = primes_of_bounded_norm(B+1)
+        aplist = [None]*len(primes)
+        last_p = None
+        for ap in self.eigenvalues:
+            P = Prime(ap.p, ap.r, first = (last_p != ap.p))
+            last_p = ap.p
+            i = primes.index(P)  # potentially "slow" but nothing compared to DB accesses...
+            aplist[i] = ap.value
+        return aplist, primes
+
     def __repr__(self):
         return "<Rational newform in %s given by the vector %s>"%(self.space, self.vector)
 
@@ -64,7 +88,7 @@ class RationalEigenvalue(Base):
     value = Column(Integer)                 # the actual eigenvalue
 
     newform_id = Column(Integer, ForeignKey("rational_newforms.id"), primary_key=True)
-    newform = relationship("RationalNewform", backref=backref("eigenvalues", order_by=norm))
+    newform = relationship("RationalNewform", backref=backref("eigenvalues", order_by=(norm, r)))
 
     def __repr__(self):
         return "<P=(a-%s,%s), a_P=%s>"%(self.r, self.p, self.value)
@@ -87,9 +111,11 @@ def session():
 ########################################################
 # Convenience functions to use the database
 ########################################################
-from sage.all import QQ, ZZ, NumberField, polygen, dumps, gcd, parallel, divisors
+from sage.all import (QQ, ZZ, NumberField, polygen, dumps, gcd, parallel, divisors,
+                      cartesian_product_iterator)
 from sage.rings.all import is_Ideal
 from psage.modform.hilbert.sqrt5.hmf import primes_of_bounded_norm
+from psage.number_fields.sqrt5.prime import Prime
 
 x = polygen(QQ, 'x')
 F = NumberField(x**2 - x - 1, 'a')
@@ -103,10 +129,7 @@ def tuple_to_ideal(t):
     return F.ideal([t[0] + a*t[1], t[2] + a*t[2]])
 
 def fast_ideal(P):
-    if is_Ideal(P):
-        import psage.number_fields.sqrt5.prime
-        P = psage.number_fields.sqrt5.prime.Prime(P)
-    return P
+    return Prime(P) if is_Ideal(P) else P
     
 def store_space(s, H):
     """
@@ -347,7 +370,7 @@ def compute_more_rational_eigenvalues_in_parallel(B1, B2, bound, ncpus=8):
 def compute_lseries(s, f, prec):
     """
     s = session
-    f = rational newform object
+    f = rational newform object (got using the session s!)
     prec = bits of precision
 
     This function computes the L-series attached to the given newform
@@ -366,10 +389,12 @@ def compute_lseries(s, f, prec):
     #        - query database and get corresponding good a_q, or raise
     #          error if some missing.
 
-    aplist, primes, unknown = f.known_aplist()
-    # aplist = list of integers of None
-    # primes = list of psage fast primes
-    # unknown = list of ints i such that ap[i] = None
+    # Compute aplist:
+    #     - aplist = list of integers of None
+    #     - primes = list of psage fast primes
+    #     - unknown = list of ints i such that ap[i] = None
+    aplist, primes = f.known_aplist()
+    unknown = [i for i in range(len(aplist)) if aplist[i] is None]
 
     # Check that the unknown primes all exactly divide the level.
     level = f.level()
@@ -386,10 +411,11 @@ def compute_lseries(s, f, prec):
     #        - we use a custom L-series class deriving from what
     #          is in psage defined above
     lseries_that_work = []
-    for bad_ap in cartesian_product([[-1,1]]*len(unknown)):
+    for bad_ap in cartesian_product_iterator([[-1,1]]*len(unknown)):
+        print "bad_ap = ", bad_ap
         aplist1 = list(aplist)
-        for i in unknown:
-            aplist1[i] = bad_ap[i]
+        for i, j in enumerate(unknown):
+            aplist1[j] = bad_ap[i]
         try:
             L = LSeries(level=level, aplist=aplist1, primes=primes, prec=prec)
             lseries_that_work.append((L, bad_ap))
@@ -410,8 +436,45 @@ def compute_lseries(s, f, prec):
     for i in unknown:
         f.store_eigenvalue(primes[i], bad_ap[i])
 
+    # store epsilon factor (sign of f.e.) to the database
+    # TODO!
+
     s.commit()
     return L
+
+
+from psage.lseries.eulerprod import LSeriesAbstract, prime_below
+class LSeries(LSeriesAbstract):
+    def __init__(self, level, aplist, primes, prec):
+        self._level = level
+        self._aplist = aplist
+        self._primes = primes
+        self._prec = prec
+        LSeriesAbstract.__init__(self, conductor = level.norm() * 25,
+                                 hodge_numbers = [0]*2+[1]*2, weight = 2, epsilon = [1,-1],
+                                 poles = [], residues=[], base_field = F, prec=prec)
+
+    def _primes_above(self, p):
+        """
+        Return the primes above p.  This function returns a special
+        optimized prime of the ring of integers of Q(sqrt(5)).
+        """
+        from psage.number_fields.sqrt5.prime import primes_above
+        return primes_above(p)
+
+    def _local_factor(self, P, prec):
+        print P
+        T = ZZ['T'].gen()
+        ap = self._aplist[self._primes.index(P)]
+        q = P.norm()
+        p = prime_below(P)
+        f = ZZ(q).ord(p)
+        if P.sage_ideal().divides(self._level):
+            return 1 - ap*(T**f)
+        else:
+            print 1 - ap*(T**f) + q*(T**(2*f))
+            return 1 - ap*(T**f) + q*(T**(2*f))
+        
 
                            
 
