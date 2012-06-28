@@ -61,3 +61,37 @@ Merge made by the 'recursive' strategy.
 blastoff:mrc-2012 wstein$ git push
 
 ETc. 
+
+
+-------------
+
+
+sage: from sage.lfunctions.eulerprod import LSeries
+sage: from sage.modular.hilbert.sqrt5_hmf import F, QuaternionicModule
+sage: L = LSeries(EllipticCurve('163a').change_ring(F))
+
+--
+
+sage:  from sage.modular.hilbert.sqrt5_hmf import F, QuaternionicModule
+sage: from psage.lseries.eulerprod import LSeries
+sage: L = LSeries(EllipticCurve('11a').change_ring(F))
+sage: L.number_of_coefficients(53)
+1069
+sage: L.number_of_coefficients(20)
+259
+
+sage: L = LSeries(EllipticCurve('163a').change_ring(F))
+sage: L.number_of_coefficients(53)
+16702
+sage: L.number_of_coefficients(10)
+2283
+sage: L.taylor_series(1, 5)
+0.000000000000000 + (5.66602878285977e-20)*z + 0.000000000000000*z^2 + 3.82046485133121*z^3 - 7.15574079314048*z^4 + O(z^5)
+sage: L.taylor_series(1, 5, prec=10)
+0.00 + (6.7e-9)*z + (-1.3e-8)*z^2 + 3.8*z^3 - 7.2*z^4 + O(z^5)
+sage: L.taylor_series(1, 5, prec=20)
+0.00000 + (3.2513e-11)*z + (-6.0897e-11)*z^2 + 3.8205*z^3 - 7.1557*z^4 + O(z^5)
+
+
+-------------------------------------------------------------------
+
