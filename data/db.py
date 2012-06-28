@@ -48,15 +48,25 @@ class RationalNewform(Base):
     vector = Column(String)
     dual_vector = Column(String)
     space = relationship("Space", backref=backref("rational_newforms", order_by=id))
-    __table_args__ = (
-        UniqueConstraint(space_id, vector),
-    )
+    root_number = Column(Integer)
+    root_number_prec = Column(Integer)    
+    rank = Column(Integer)
+    rank_prec = Column(Integer)
+
+    __table_args__ = (UniqueConstraint(space_id, vector),)
 
     def store_eigenvalue(self, P, value):
         self.eigenvalues.append(RationalEigenvalue(P, int(ZZ(value))))
 
     def level(self):
         return self.space.level()
+
+    def biggest_good_ap_normp_known(self):
+        v = self.eigenvalues
+        if len(v) == 0:
+            return 0
+        else:
+            return v[-1].norm
 
     def known_aplist(self):
         """
@@ -367,7 +377,7 @@ def compute_more_rational_eigenvalues_in_parallel(B1, B2, bound, ncpus=8):
         print X
     
 
-def compute_lseries(s, f, prec):
+def compute_lseries(s, f, prec, T=1.05):
     """
     s = session
     f = rational newform object (got using the session s!)
@@ -378,6 +388,8 @@ def compute_lseries(s, f, prec):
     biggest p such that a_p is known) if they are not known, and saves
     those a_p in the database.  It uses prec bits of precision, and if
     not enough a_p are known in the database, then it will fail.
+
+    DOES NOT COMMIT.  Call s.commit() after calling this to save.
     """
     
     #
@@ -416,42 +428,72 @@ def compute_lseries(s, f, prec):
         aplist1 = list(aplist)
         for i, j in enumerate(unknown):
             aplist1[j] = bad_ap[i]
-        try:
-            L = LSeries(level=level, aplist=aplist1, primes=primes, prec=prec)
-            lseries_that_work.append((L, bad_ap))
-        except RuntimeError:
-            pass
+        for eps in [-1,1]:
+            print "trying eps = ", eps
+            L = LSeries(level=level, aplist=aplist1, primes=primes, prec=prec, root_number=eps)
+            try:
+                L._function(prec=prec, T=T)
+            except RuntimeError:
+                print "Definitely does not satisfy functional equation..."
+            else:
+                print "It seems to satisfy functional equation..."
+                lseries_that_work.append((L, bad_ap))
     if len(lseries_that_work) > 1:
-        raise RuntimeError, "%s choices of sign work -- functional equation doesn't nail down one choice."%len(lseries_that_work)
+        print "WARNING: %s choices of bad a_p's seem to work -- functional equation doesn't nail down one choice.\nWe will check numerically that all choices are consistent, and only save a_p that we are certain about."%len(lseries_that_work)
     if len(lseries_that_work) == 0:
-        raise RuntimeError, "no choices of sign work -- please increase precision!"
+        raise RuntimeError, "no choices of bad a_p's seem to work -- please increase precision!"
     
     # 3. If *exactly one* L-series works, save to the database the
     #    corresponding bad a_p, and return the L-series.  Otherwise,
     #    raise an error.
-
-    assert len(lseries_that_work) == 1 # I'm paranoid
-    L, bad_ap = lseries_that_work[0]
+    # Only save bad_ap's that are the same for all L-series.
+    
+    
     # save missing a_p, which we now know, to the database
+    print "saving missing eigenvalues, which we just determined, to the database..."
     for i, j in enumerate(unknown):
-        f.store_eigenvalue(primes[j], bad_ap[i])
+        # only store ones such that multiple distinct choices didn't work.
+        if len([bad_ap[i] for _, bad_ap in lseries_that_work]) == 1:
+            f.store_eigenvalue(primes[j], lseries_that_work[0][1][i])
 
+    # return one of the L-series, after doing a double check that they are
+    # all basically the same numerically.
+    if len(lseries_that_work) > 1:
+        ts = lseries_that_work[0][0].taylor_series(prec=prec)
+        for i in range(1, len(lseries_that_work)):
+            ts2 = lseries_that_work[i][0].taylor_series(prec=prec)
+            if ts != ts2:
+                raise RuntimeError, "ts=%s, ts2=%s"%(ts, ts2)
+
+    L = lseries_that_work[0][0]
+    
     # store epsilon factor (sign of f.e.) to the database
-    # TODO!
+    if f.root_number is None:
+        root_number = L.epsilon()
+        print "saving root number (=%s) to database..."%root_number
+        f.root_number = root_number
+        f.root_number_prec = root_number_prec
 
-    s.commit()
+    if f.rank is None:
+        rank = L.analytic_rank(prec=prec)
+        print "saving rank (=%s) to database..."%rank
+        f.rank = rank
+        f.rank_prec = prec
+        
+        
     return L
 
 
 from psage.lseries.eulerprod import LSeriesAbstract, prime_below
 class LSeries(LSeriesAbstract):
-    def __init__(self, level, aplist, primes, prec):
+    def __init__(self, level, aplist, primes, root_number, prec):
         self._level = level
         self._aplist = aplist
         self._primes = primes
         self._prec = prec
+        self._root_number = root_number
         LSeriesAbstract.__init__(self, conductor = level.norm() * 25,
-                                 hodge_numbers = [0]*2+[1]*2, weight = 2, epsilon = [1,-1],
+                                 hodge_numbers = [0]*2+[1]*2, weight = 2, epsilon = root_number,
                                  poles = [], residues=[], base_field = F, prec=prec)
 
     def _primes_above(self, p):
@@ -463,22 +505,22 @@ class LSeries(LSeriesAbstract):
         return primes_above(p)
 
     def _local_factor(self, P, prec):
-        print P
         T = ZZ['T'].gen()
         try:
-            ap = self._aplist[self._primes.index(P)]
-            q = P.norm()
-            Ps = P.sage_ideal()
-            p = prime_below(Ps)
-            f = ZZ(q).ord(p)
-            if Ps.divides(self._level):
-                return 1 - ap*(T**f)
-            else:
-                return 1 - ap*(T**f) + q*(T**(2*f))
-        except Exception, msg:
+            i = self._primes.index(P)
+        except ValueError:
+            msg = "Constructing L-series of form of norm level %s to precision %s: not enough precision -- don't know a_P for P (=%s) of norm %s"%(self._level.norm(), self._prec, P, P.norm())
             print msg
-            raise RuntimeError, msg
-
+            raise Exception, msg
+        ap = self._aplist[i]
+        q = P.norm()
+        Ps = P.sage_ideal()
+        p = prime_below(Ps)
+        f = ZZ(q).ord(p)
+        if Ps.divides(self._level):
+            return 1 - ap*(T**f)
+        else:
+            return 1 - ap*(T**f) + q*(T**(2*f))
                            
 
 
