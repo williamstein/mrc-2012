@@ -131,23 +131,23 @@ For $k \geq 1$, integrating by parts we have
 
 Let
 \begin{equation*}
-E_r(x)=\int_x^{\infty} \exp(-t) (\ln t)^{r-1}\frac{dt}{t}.
+G_r(x)=\frac{1}{(r-1)!}\int_1^{\infty} \exp(-xt) (\ln t)^{r-1}\frac{dt}{t}.
 \end{equation*}
 
 When $k=1$, we have:
 \begin{align*}
 \int_{1}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) (\ln y_1+\ln y_2) dy_1
 = & \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp\left( -2\pi \frac{v}{\sqrt{N} d}\right)  \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) \ln y_2 + \\
-& \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} E_1\left( 2\pi \frac{v}{\sqrt{N} d}\right) \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right)
+& \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} G_1\left( 2\pi \frac{v}{\sqrt{N} d}\right) \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right)
 \end{align*}
 
 We must now integrate with respect to $y_2$. We first do the first integral:
 \begin{align*}
 \int_{1/\epsilon}^{\epsilon} \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) \ln y_2 dy_2
  = & -\frac{\sqrt{\bar{N}}\bar{d}}{2 \pi\bar{v}} \left( \exp \left( -2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) \ln \epsilon -  \exp \left( -2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \ln(1/\epsilon) \right. \\
- & + \left. E_1\left(2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right)-E_1\left( 2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right)\\
+ & + \left. G_1\left(2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right)-G_1\left( 2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right)\\
 = & -\frac{\sqrt{\bar{N}}\bar{d}}{2 \pi\bar{v}} \left( \ln \epsilon \left( \exp \left( -2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) +  \exp \left( -2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right) \right. \\
- & + \left. E_1\left(2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right)-E_1\left( 2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right)\\
+ & + \left. G_1\left(2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right)-G_1\left( 2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right)\\
 \end{align*}
 
 Now the second integral:
@@ -160,8 +160,10 @@ Altogether we have:
 \begin{align*}
 \int_{1/\epsilon}^{\epsilon} \int_{1}^{\infty} & f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) (\ln y_1+\ln y_2)dy_1 dy_2 \\
 = &- \frac{\mathbb{N}(N)^{1/2}\mathbb{N}(d)}{4 \pi^2 }\sum_{v \in \mathcal{O}_+}  \frac{a_v}{\mathbb{N}(v)}  \exp\left( -2\pi \frac{v}{\sqrt{N} d}\right) \left( \ln \epsilon \left( \exp \left( -2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) +  \exp \left( -2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right) \right. \\
-& + \left. E_1\left(2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right)-E_1\left( 2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right) \\
-- & \frac{\mathbb{N}(N)^{1/2}\mathbb{N}(d)}{4 \pi^2 } \sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)}  E_1\left( 2\pi \frac{v}{\sqrt{N} d}\right) \left( \exp \left( -2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) -  \exp \left( -2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right)\right)
+& + \left. G_1\left(2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right)-G_1\left( 2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right) \\
+- & \frac{\mathbb{N}(N)^{1/2}\mathbb{N}(d)}{4 \pi^2 } \sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)}  G_1\left( 2\pi \frac{v}{\sqrt{N} d}\right) \left( \exp \left( -2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) -  \exp \left( -2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right)\right)
 \end{align*}
+
+The first derivative is this whole mess times $(1 - \epsilon_N)$
 
 \end{document}
