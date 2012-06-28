@@ -1,0 +1,29 @@
+import sage.modular.hilbert.sqrt5_fast
+F.<a> = NumberField(x^2-x-1)
+N = F.primes_above(1209079)[0]
+I = sage.modular.hilbert.sqrt5_fast.IcosiansModP1ModN(N)
+t = I.hecke_matrix(F.prime_above(2), eclib=True)
+
+
+Using Cremona smat/svec: it takes just over an hour:
+
+time t.kernel()
+Time: CPU 3897.44 s, Wall: 4031.48 s
+
+Using Sage's sparse linear algebra, this takes 3.3 hours:
+
+sage: set_verbose(2)
+sage: time b = a.echelon_form()
+verbose 1 (sparse_matrix_pyx matrix_modint echelon)
+verbose 2 (matrix_modn_sparse echelon) on column 2016 of 20152
+verbose 2 (matrix_modn_sparse echelon) on column 4032 of 20152
+verbose 2 (matrix_modn_sparse echelon) on column 6048 of 20152
+verbose 2 (matrix_modn_sparse echelon) on column 8064 of 20152
+verbose 2 (matrix_modn_sparse echelon) on column 10080 of 20152
+verbose 2 (matrix_modn_sparse echelon) on column 12096 of 20152
+verbose 2 (matrix_modn_sparse echelon) on column 14112 of 20152
+verbose 2 (matrix_modn_sparse echelon) on column 16128 of 20152
+verbose 2 (matrix_modn_sparse echelon) on column 18144 of 20152
+Time: CPU 11410.99 s, Wall: 12128.91 s
+
+
