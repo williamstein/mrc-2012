@@ -72,7 +72,7 @@ sage: L = LSeries(EllipticCurve('163a').change_ring(F))
 
 --
 
-sage:  from sage.modular.hilbert.sqrt5_hmf import F, QuaternionicModule
+sage: from sage.modular.hilbert.sqrt5_hmf import F, QuaternionicModule
 sage: from psage.lseries.eulerprod import LSeries
 sage: L = LSeries(EllipticCurve('11a').change_ring(F))
 sage: L.number_of_coefficients(53)

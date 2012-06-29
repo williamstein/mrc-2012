@@ -13,6 +13,12 @@ Time: CPU 3897.44 s, Wall: 4031.48 s
 Using Sage's sparse linear algebra, this takes 3.3 hours:
 
 sage: set_verbose(2)
+import sage.modular.hilbert.sqrt5_fast
+F.<a> = NumberField(x^2-x-1)
+N = F.primes_above(1209079)[0]
+I = sage.modular.hilbert.sqrt5_fast.IcosiansModP1ModN(N)
+t = I.hecke_matrix(F.prime_above(2), eclib=False).change_ring(GF(previous_prime(2^15)))
+
 sage: time b = a.echelon_form()
 verbose 1 (sparse_matrix_pyx matrix_modint echelon)
 verbose 2 (matrix_modn_sparse echelon) on column 2016 of 20152
@@ -27,3 +33,26 @@ verbose 2 (matrix_modn_sparse echelon) on column 18144 of 20152
 Time: CPU 11410.99 s, Wall: 12128.91 s
 
 
+Using our new code:
+
+set_verbose(2)
+import sage.modular.hilbert.sqrt5_fast
+F.<a> = NumberField(x^2-x-1)
+N = F.primes_above(1209079)[0]
+I = sage.modular.hilbert.sqrt5_fast.IcosiansModP1ModN(N)
+t = I.hecke_matrix(F.prime_above(2), eclib=False).change_ring(GF(previous_prime(2^15)))
+
+# or
+
+time t._echelon_in_place_classical(density_cutoff=0.05)
+Time: CPU 164.19 s, Wall: 165.13 s
+
+
+-----------------------------
+
+The curve:
+
+F.<a> = NumberField(x^2 - x - 1)
+E = EllipticCurve([1, -1, 0, -8-12*a, 19+30*a])
+from psage.lseries.eulerprod import LSeries
+L = LSeries(E.change_ring(F))
