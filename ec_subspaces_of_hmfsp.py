@@ -1,6 +1,48 @@
 from psage.modform.hilbert.sqrt5.hmf import *
 
+pr = primes_of_bounded_norm(30)
 
+def eigen_check(E,N,H,pr):
+    ap_list, coprime_list = slow_ap(E,N,pr) 
+    for p in coprime_list:
+        ap = ap_list[coprime_list.index(p)]
+        Tp = H.hecke_matrix(p.sage_ideal())
+        v = E.basis_matrix()[0]
+        le = v*Tp
+        re = Tp*v.column()
+        if not le == ap*v:
+            print 'not left eigenvalue at ', ap
+        if not re == ap*v.column():
+            print 'not right eigenvalue at', ap
+
+
+
+def dual_eigenvector(E,N,H,pr):
+    """
+    INPUT:
+        `E` - a one dimensional subspace of H = HilbertModularForms(N) with "small" rational eigenvalues
+        `N` - level
+    OUTPUT:
+        The dual vector of E.  
+    This is stupid and slow but should work.  
+    """
+    ap_list, coprime_list = slow_ap(E,N,pr)
+    V = H.vector_space()
+    for p in coprime_list:
+        ap = ap_list[coprime_list.index(p)]
+        Tp = H.hecke_matrix(p.sage_ideal()).transpose()
+        #print 'Tp', Tp
+        Rp = (Tp-ap).restrict_domain(V)
+        #print 'Rp', Rp
+        Kp = Rp.kernel()
+        #print 'Kp', Kp
+        print ap, p, Kp.dimension()
+        if Kp.dimension() == 1:
+            return Kp
+        else:
+            V = Kp
+    return
+    
 def slow_ap(V,N,pr):
     H = HilbertModularForms(N)
     coprime_list = []
@@ -30,12 +72,15 @@ def quick_eig(s,V):
         sage: S = T2.decomposition_of_subspace(H.vector_space())
         sage: quick_eig(S[0][0],T2)
         5
+    This code is dodgy and I should fix it.
     """
     v = s.basis_matrix().row(0)
     try:
         n = v*V
     except:
-        n = V.matrix()*v.transpose()
+        print 'Dodgy!'
+        #n = V.matrix()*v.transpose()
+        raise ValueError, 'can\'t multiply'
     b = v.list()[v.nonzero_positions()[0]]
     #b = n.list()[vector(n.list()).nonzero_positions()[0]]
     if n.is_zero():
@@ -153,27 +198,27 @@ def find_ecs(ECs,N,H,V,ap_list,coprime_list,p,prime_list, Questionable_Subspaces
         coprime_list.append(p)
     P = p.sage_ideal()
     #print 'prime list is', prime_list
-    print ' the prime is ', p
+    #print ' the prime is ', p
     #and Hasse Bound
     b = 2*P.norm().sqrt().n().floor()
     #compute Tp
     Tp = H.hecke_matrix(P)
     #decompose with respect to the space V
     #print 'Tp', Tp
-    print 'V', V
+    #print 'V', V
     Vps = Tp.decomposition_of_subspace(V)   
-    print 'decomposed'
-    print Vps
+    #print 'decomposed'
+    #print Vps
     #now run through the subspaces and 
     #check, throw out, or cut down
     for S in Vps:
         S = S[0]
         a = quick_eig(S,Tp)
-        print S
+        #print S
         if S.dimension() == 1:
-            print 'in d = 1'
+            #print 'in d = 1'
             #e = quick_eig(S,Tp)
-            print 'eigenvalue is ', a, ' for the prime', p 
+            #print 'eigenvalue is ', a, ' for the prime', p 
             if a <= b and a >= -b:
                 #found one!
                 ECs.append(S)
@@ -213,6 +258,7 @@ def oldform_check(ap_list,coprime_list,S,N):
         #print 'in try'
         IRO,M = is_rational_old(s,ap_list,coprime_list,N)
     except:
+        print 'something dubious occured looking for oldforms' 
         IRO = False
         M = None
     #print IRO,M
@@ -236,10 +282,10 @@ def find_ecs_from_N(N,prime_list):
     ECs = []
     Questionable_Subspaces = []
     for a in range(-b,b+1):
-        print "in for loop for a = ", a
+        #print "in for loop for a = ", a
         K = (Tp-a).kernel()
         d = K.dimension()
-        print K
+        #print K
         if d == 1:
             ECs.append(K)
         elif d > 1:

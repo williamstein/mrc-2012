@@ -3,7 +3,7 @@
 ########################################################
 
 from sqlalchemy import create_engine
-engine = create_engine('postgresql://mrc@geom.math.washington.edu:6432/mrc', echo=True)
+engine = create_engine('postgresql://mrc@geom.math.washington.edu:6432/mrc', echo=False)
 #engine = create_engine('sqlite:///')
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -231,9 +231,9 @@ def is_rational_old(s, v, primes, N):
     w = [(P.r, P.p, int(v[i])) for i, P in enumerate(primes) if P.sage_ideal().is_coprime(N)]
     print 'w', w
     for M in proper_divisors(N):
-        print 'in for loop on M = ', M
+        #print 'in for loop on M = ', M
         if not know_all_rational_eigenvectors(s, M):
-            print 'no enough info, trying again'
+            #print 'no enough info, trying again'
             return False, None #I want to keep the space and try again later.
             #raise RuntimeError, "all newforms of level %s (norm=%s) not known so we can't tell if this is a rational newform or not"%(M, M.norm())
         # query the eigenvalues determined by primes above for rational newforms of level M.
@@ -247,6 +247,7 @@ def is_rational_old(s, v, primes, N):
                     all_eigs_same = False
                     break
             if all_eigs_same:
+                print 'found oldform!',M
                 return True, M
     return False, None
 
