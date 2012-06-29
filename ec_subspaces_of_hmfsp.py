@@ -120,32 +120,27 @@ def find_ecs(Ecs,N,H,V,p,prime_list,oldform_dims):
             
             
     
-def oldform_check(S,N):
+def oldform_check(ap_list,prime_list,S,N):
     """
     INPUT:
-        `S` - a subspace of the Hilbert modular forms of level N
-        `N` - an ideal of F
+        `ap_list` - the list of a_p values for the subspace we wish to test
+        `prime_list` - the corresponding list of primes in F=Q(sqrt(5))
+        `S` - subspace
+        `N` - Level
     OUTPUT:
-        Whether or not S comes from oldforms, if so, whether S has
-        appropriate dimension so that we may discard it.
+        Whether or not the subspace comes from oldforms.
         Returns `True` if it can be discarded and `False` otherwise
     """
     dims,levels = old_form_dims(N)
     d = S.dimension()
-    for M in levels:
-        #now we need to get the ap lists for all curves of level M
-        pass
-        ##MISSING!!!!##
-        """
-        Get a list of lists of ap's
-        for each list:
-            for each ap:
-                check if ap is an eigenvalue of the space
-                i.e., compute s*(Tp-ap),check = 0 
-                for the basis vectors of s
-                if so, throw out S and terminate.
-                return True
-        """
+    s = session() #??? Is this the correct place for this
+    IRO = is_rational_old(s, ap_list, prime_list, N)
+    #IRO,M = is_rational_old(s,ap_list,prime_list,N)
+    dM = dims[levels.index(M)]
+    if dM = d and IRO:
+        return True
+    #??? Do we need to still check the dimensions?  
+    #Does William's code do this? Nope - so we need it to return the level.
     return False
             
 
