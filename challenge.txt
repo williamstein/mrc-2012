@@ -64,3 +64,20 @@ sage: L.number_of_coefficients(6)
 13254
 
 Bober says that with his code:
+
+The precision of computing L(1) with all primes of norm < n for a curve of
+norm-conductor N should be something like exp(-2pi n^(1/2) / (N^(1/4) 5^(1/2) ) ).
+For the curve above, this means:
+
+sage: error(n, N) = exp(-2*pi*sqrt(n)/(N^(1/4)*sqrt(5)))
+sage: N = E.conductor().norm()
+sage: RR(error(1000, N))
+0.0685858334634427
+sage: RR(error(4000, N)) 
+0.00470401655187510
+sage: RR(error(10000, N))
+0.000208857515081547
+sage: RR(error(20000, N)) 
+6.24427626391156e-6
+
+which seems in line with the accuracy of actual computations.
