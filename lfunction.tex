@@ -20,8 +20,8 @@ f(z)=\sum_{v \in \mathcal{O}_+} a_v \exp\left(2\pi i\Tr \frac{v z}{d}\right),
 \end{equation*}
 (the fact that the sum can be restricted to the totally real elements is a theorem) and a completed $L$-function
 \begin{align*}
-\Lambda(s,f) & = \frac{1}{4\pi^2} \Gamma(s)^2 \mathbb{N}(N)^{s/2} D^s L(s,f)\\
-&= \frac{1}{4\pi^2} \Gamma(s)^2 \mathbb{N}(N)^{s/2} D^s \sum_{\mathfrak{a}}a_{\mathfrak{a}}\mathbb{N}(\mathfrak{a})^{-s}.
+\Lambda(s,f) & = \frac{1}{(2\pi)^{2s}} \Gamma(s)^2 \mathbb{N}(N)^{s/2} D^s L(s,f)\\
+&= \frac{1}{(2\pi)^{2s}} \Gamma(s)^2 \mathbb{N}(N)^{s/2} D^s \sum_{\mathfrak{a}}a_{\mathfrak{a}}\mathbb{N}(\mathfrak{a})^{-s}.
 \end{align*}
 Also, because $f$ is an eigenform, it is also an eigenform for the Atkin-Lehner involution $W_N$ with eigenvalue $\epsilon_N= \pm 1$:
 \begin{equation*}
@@ -43,7 +43,7 @@ We have that:
 & = \sum_{\alpha \in \mathcal{O}_+^* \backslash \mathcal{O}_+} \sum_{\epsilon \in \mathcal{O}_+^*} a_{\alpha \mathcal{O}} \int_{\mathcal{O}_+^*\backslash \mathbb{R}^2_+} \exp\left( -2\pi \left(\frac{\alpha \epsilon y_1}{\sqrt{N} d}+\frac{\bar{\alpha}\bar{\epsilon} y_2}{\sqrt{\bar{N}}\bar{d}}  \right)\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2\\
 & = \sum_{\alpha \in \mathcal{O}_+^* \backslash \mathcal{O}_+} a_{\alpha \mathcal{O}} \int_{\mathbb{R}^2_+} \exp\left( -2\pi \left(\frac{\alpha y_1}{\sqrt{N} d}+\frac{\bar{\alpha} y_2}{\sqrt{\bar{N}}\bar{d}}  \right)\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2\\
 &= \sum_{\alpha \in \mathcal{O}_+^* \backslash \mathcal{O}_+} a_{\alpha \mathcal{O}} (2 \pi)^{-2s} \left(\frac{\sqrt{N}d}{\alpha}\right)^s\left(\frac{\sqrt{\bar{N}}\bar{d}}{\bar{\alpha}}\right)^s \Gamma(s)^2\\
-&= \frac{1}{4\pi^2} \Gamma(s)^2 \mathbb{N}(N)^{s/2} \mathbb{N}(d)^s \sum_{\alpha \in \mathcal{O}_+^* \backslash \mathcal{O}_+} a_{\alpha \mathcal{O}} \mathbb{N}(\alpha)^{-s}  
+&= \frac{1}{(2\pi)^{2s}} \Gamma(s)^2 \mathbb{N}(N)^{s/2} \mathbb{N}(d)^s \sum_{\alpha \in \mathcal{O}_+^* \backslash \mathcal{O}_+} a_{\alpha \mathcal{O}} \mathbb{N}(\alpha)^{-s}  
 \end{align*}
 Using that  $\mathbb{N}(d)=D$ and $\mathbb{N}(\alpha)= \mathbb{N}(\mathfrak{a})$, this completes the proof.
 \end{proof}
@@ -177,7 +177,7 @@ We now compute $\Lambda^{(k)}(1,f)$ for general $k$. Recall that:
 \qquad = &\sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp\left( -2\pi \frac{v}{\sqrt{N} d}\right) \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^k \\
 \qquad& +  k \sum_{i=0}^{k-1} \binom{k-1}{i} \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp \left(  \frac{-2\pi\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^{k-1-i} \int_1^{\infty} \exp\left( \frac{-2\pi vy_1}{\sqrt{N} d}\right) (\ln y_1)^i \frac{dy_1}{y_1}\\
 \qquad = &\sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp\left( -2\pi \frac{v}{\sqrt{N} d}\right) \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^k \\
-\qquad& +  k \sum_{i=0}^{k-1} \binom{k-1}{i} \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp \left(  \frac{-2\pi\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^{k-1-i} (i+1)! G_{i+1}\left( \frac{-2\pi v}{\sqrt{N} d}\right) 
+\qquad& +  k \sum_{i=0}^{k-1} \binom{k-1}{i} \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp \left(  \frac{-2\pi\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^{k-1-i} (i+1)! G_{i+1}\left( \frac{2\pi v}{\sqrt{N} d}\right) 
 \end{split}
 \end{equation*}
 
