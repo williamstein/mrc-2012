@@ -31,3 +31,4 @@ pip-log.txt
 *.synctex.gz
 *.toc
 *.out
+*.swp
