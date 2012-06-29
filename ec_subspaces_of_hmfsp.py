@@ -1,5 +1,18 @@
 from psage.modform.hilbert.sqrt5.hmf import *
 
+
+def slow_ap(V,N,pr):
+    H = HilbertModularForms(N)
+    coprime_list = []
+    ap_list = []
+    for p in pr:
+        P = p.sage_ideal()
+        if not P.divides(N):
+            Tp = H.hecke_matrix(P)
+            ap_list.append(quick_eig(V,Tp))
+            coprime_list.append(p)
+    return ap_list, coprime_list 
+
 def quick_eig(s,V):
     """
     INPUT:
@@ -19,9 +32,17 @@ def quick_eig(s,V):
         5
     """
     v = s.basis_matrix().row(0)
-    n = v*V
+    try:
+        n = v*V
+    except:
+        n = V.matrix()*v.transpose()
     b = v.list()[v.nonzero_positions()[0]]
-    t = n.list()[n.nonzero_positions()[0]]
+    #b = n.list()[vector(n.list()).nonzero_positions()[0]]
+    if n.is_zero():
+        return 0
+    else:
+        #t = n.list()[n.nonzero_positions()[0]]
+        t = n.list()[vector(n.list()).nonzero_positions()[0]]
     return t/b
 
 def small_prime(N,prime_list):
@@ -48,7 +69,7 @@ def small_prime(N,prime_list):
     
 
 
-def old_form_dims(N,set_of_levels):
+def old_form_dims(N):
     """
     INPUT:
         `N` - the level
@@ -63,10 +84,9 @@ def old_form_dims(N,set_of_levels):
     levels = []
     divs = divisors(N)
     for M in divs:
-        if M in set_of_levels:
-            sig = sigma_0(N,M)
-            dims.append(sig)
-            levels.append(M)
+        sig = sigma_0(N,M)
+        dims.append(sig)
+        levels.append(M)
     return dims,levels
     
     
@@ -107,10 +127,10 @@ def next_small_prime(N,p,prime_list):
         q = prime_list[j].sage_ideal()
         if not q.divides(N):
             return prime_list[j]
-    raise ValueError, 'prime list needs more primes'
+    return None
     
     
-def find_ecs(Ecs,N,H,V,ap_list,p,prime_list):
+def find_ecs(ECs,N,H,V,ap_list,coprime_list,p,prime_list, Questionable_Subspaces):
     """
     Goal: find elliptic curves and cut out oldforms and abelian varieties
     INPUT:
@@ -126,41 +146,51 @@ def find_ecs(Ecs,N,H,V,ap_list,p,prime_list):
     #compute next Tp
     #first find the next small prime coprime to N
     p = next_small_prime(N,p,prime_list)
+    if p == None:
+        Questionable_Subspaces.append(V)
+        return
+    if p not in coprime_list:
+        coprime_list.append(p)
     P = p.sage_ideal()
+    #print 'prime list is', prime_list
     print ' the prime is ', p
     #and Hasse Bound
     b = 2*P.norm().sqrt().n().floor()
-    #remove it from the list to create a new list
-    prime_list.remove(p)
     #compute Tp
     Tp = H.hecke_matrix(P)
     #decompose with respect to the space V
-    print 'Tp', Tp
+    #print 'Tp', Tp
     print 'V', V
-    Vps = Tp.decomposition_of_subspace(V)
-    
+    Vps = Tp.decomposition_of_subspace(V)   
+    print 'decomposed'
+    print Vps
     #now run through the subspaces and 
     #check, throw out, or cut down
     for S in Vps:
         S = S[0]
+        a = quick_eig(S,Tp)
+        print S
         if S.dimension() == 1:
-            e = quick_eig(S,V)
-            if e.abs() <= b:
+            print 'in d = 1'
+            #e = quick_eig(S,Tp)
+            print 'eigenvalue is ', a, ' for the prime', p 
+            if a <= b and a >= -b:
                 #found one!
                 ECs.append(S)
         if S.dimension() > 1:
-            a = quick_eig(S,Tp)
-            ap_list.append(a) 
+            #a = quick_eig(S,Tp)
+            ap_list.append(a)
+            #print 'ap_list', ap_list 
             #check for oldforms
-            if not oldform_check(S,N):
+            if not oldform_check(ap_list,coprime_list,S,N):
                 #repeat for the next prime and S = V
-                q = p
-                q = next_small_prime(N,q,prime_list)
-                find_ecs(Ecs,N,H,S,ap_list,p,prime_list)
+                #q = p
+                #q = next_small_prime(N,q,prime_list)
+                find_ecs(ECs,N,H,S,ap_list,coprime_list,p,prime_list,Questionable_Subspaces)
             
             
     
-def oldform_check(ap_list,prime_list,S,N):
+def oldform_check(ap_list,coprime_list,S,N):
     """
     INPUT:
         `ap_list` - the list of a_p values for the subspace we wish to test
@@ -171,11 +201,23 @@ def oldform_check(ap_list,prime_list,S,N):
         Whether or not the subspace comes from oldforms.
         Returns `True` if it can be discarded and `False` otherwise
     """
+    #print 'in old_form check'
+    #print coprime_list, ap_list
     dims,levels = old_form_dims(N)
+    #print 'after dims and levels'
     d = S.dimension()
     s = session() #??? Is this the correct place for this
+    #print 'after session'
     #IRO = is_rational_old(s, ap_list, prime_list, N)
-    IRO,M = is_rational_old(s,ap_list,prime_list,N)
+    try:
+        #print 'in try'
+        IRO,M = is_rational_old(s,ap_list,coprime_list,N)
+    except:
+        IRO = False
+        M = None
+    #print IRO,M
+    if not IRO:
+        return False
     dM = dims[levels.index(M)]
     if dM == d and IRO:
         return True
@@ -187,20 +229,22 @@ def oldform_check(ap_list,prime_list,S,N):
 def find_ecs_from_N(N,prime_list):
     H = HilbertModularForms(N)
     p = small_prime(N,prime_list)
+    coprime_list = [p]
     P = p.sage_ideal()
-    #prime_list.remove(p)
     b = 2*P.norm().sqrt().n().floor()
     Tp = H.hecke_matrix(P)
     ECs = []
+    Questionable_Subspaces = []
     for a in range(-b,b+1):
-        #print "in for loop for a = ", a
+        print "in for loop for a = ", a
         K = (Tp-a).kernel()
         d = K.dimension()
+        print K
         if d == 1:
             ECs.append(K)
         elif d > 1:
-            print " d = ", d, K
-            S = Tp.decomposition_of_subspace(K)
-            for s in S:
-                find_ecs(ECs,N,H,S,[a],p,prime_list)
-    return ECs
+            #print "in fast for loop d = ", d
+            #print 'a', a
+            #print K
+            find_ecs(ECs,N,H,K,[a],coprime_list,p,prime_list,Questionable_Subspaces)
+    return ECs, Questionable_Subspaces
