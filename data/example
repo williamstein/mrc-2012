@@ -1,2 +1,13 @@
 This is an example of how git works.
-This is not really an example.
+
+
+The following is an example of using the database in Sage:
+First, make sure db.py is in your path, or you are in /mrc-2012/data/
+
+sage: from db import *
+sage: from psage.modform.hilbert.sqrt5.hmf import *
+sage: N = F.prime_above(31)
+sage: s = session()   
+sage: pr = primes_of_bounded_norm(30)
+sage: is_rational_old(s,[-3],[pr[0]],N)
+False

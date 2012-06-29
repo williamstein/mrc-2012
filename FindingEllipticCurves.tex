@@ -1,0 +1,136 @@
+\documentclass{article}
+\usepackage{url}
+\usepackage{lmodern} 
+\usepackage[parfill]{parskip}
+\usepackage{amsmath, amssymb, amsthm} 
+\usepackage{mathrsfs} 
+\usepackage{graphicx} 
+\usepackage[T1]{fontenc} 
+\usepackage{mathrsfs} 
+\usepackage{textcomp} 
+\usepackage{xspace} 
+\usepackage{amsthm}
+
+\title{Finding Eigenvectors of Spaces of Hilbert Modular Forms Corresponding to Elliptic Curves}
+
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Qbar}{\overline{\Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\renewcommand{\O}{\mathcal{O}}
+\newcommand{\OK}{\mathcal{O}_K}
+\newcommand{\OF}{\mathcal{O}_F}
+\newcommand{\QF}{\mathbb{Q}(\sqrt{5})}
+\newcommand{\fc}{\mathfrak{c}}
+\newcommand{\Rc}{R_{\mathfrak{c}}}
+\newcommand{\D}{\mathfrak{D}}
+\newcommand{\N}{\mathfrak{N}}
+\newcommand{\OFN}{\mathcal{O}_{F,\N}}
+\newcommand{\OFp}{\mathcal{O}_{F,\p}}
+\newcommand{\Fc}{\mathbb{F}_{\mathfrak{c}}}
+\newcommand{\p}{\mathfrak{p}}
+\newcommand{\Pc}{\mathbb{P}^1(\Fc)}
+\newcommand{\Gal}{\text{Gal}}
+\newcommand{\hstar}{\mathcal{H}^*}
+\newcommand{\iinf}{\iota_{\infty}}
+\newtheorem{lem}{Lemma}
+\newtheorem{defn}{Definition}
+\newtheorem{ex}{Example}
+\newtheorem{thm}{Theorem}
+
+
+\begin{document}
+\maketitle
+
+As usual, 
+let $F = \QF$ and let $N$ be an ideal of $F$.  
+Let $H(N) = S_{\bar{2}}(\Gamma_0(N))$ be the space of Hilbert modular forms of parallel weight two of level $N$.
+
+\section{Immediate Goal} Given a level $N$, 
+find all dimension and multiplicity 1 subspaces of $H(N)$ with integral eigenvalues satisfying the Hasse bound.  
+I.e., find all the elliptic curves of level $N$.
+
+\section{Motivation}
+The motivation is to confirm (or find!) rank records.  
+Elkies has shown that the curve $E$ of norm conductor $163^2$ has rank 3.  
+When ranked by conductor, is the curve the first curve of rank 3?  
+There is a known curve of rank 4, is this the first?  
+To check this, 
+we need to find all elliptic curves of lower conductor and compute their ranks.  
+We approach this by computing appropriate subspaces of $H(N)$ for all $N$ with norm up to $163^2$, 
+and hopefully up to ??.
+
+\section{Algorithm}
+
+The algorithm for finding  subspaces of $H(N)$ corresponding to elliptic curves is a two step algorithm.  
+First, let $p_1$ be the "smallest" prime coprime to $N$.
+We first compute the kernel, $K_a$, of $T_{p_1} - a$ for all $a$ in the Hasse bound, $|a| \leq 2\sqrt{N(p_1)}$.  
+Computing these kernels is by far the most expensive operation.  
+We explain our speed-up below.
+%Sebastian, could you write something about this here?
+
+These kernels are exactly the spaces of $H(N)$ which have $a$ as an eigenvalue.
+For each $a$, 
+if $K_a$ has dimension 1, 
+we've found an elliptic curve and we're done.  
+If $K_a$ has dimension 0, 
+then there are no abelian varieties with eigenvalue (i.e. $a_{p_1}$) $a$.  
+If $K_a$ has dimension greater than 1, 
+it corresponds to some combination of integral newforms, integral oldforms, and abelian varieties.  
+The dimension of $H(N)$ could be quite large, 
+but the $K_a$ should be much smaller.  
+If $K_a$ has dimension greater than zero, 
+we now assume it is small enough that we can change our method for cutting down this space.
+Cutting down  these $K_a$ is the second step.
+
+
+\subsection{Cutting down subspaces}
+Let $K$ be a dimension $d > 1$ subspace of $H(N)$ which has rational eigenvalues for the first few small primes $p_1,...,p_k$.  
+$K$ could contain integral oldforms, integral newforms, and abelian varieties, 
+the goal is to cut the space $K$ down further so we either find elliptic curves (integral newforms) or we can discard subspaces of $K$.  
+
+We could repeat the first step substituting $K$ for $H(N)$ and computing the kernels of $T_{p_{k+1}} - a$ restricted to $K$ for all $a$ in the Hasse bound of $p_{k+1}$.  
+But $K$ is much smaller than $H(N)$ and the norm of $p_{k+1}$ grows as $k$ grows.  
+We would be computing many more kernels of a small subspace.  
+This isn't going to give us a noticeable speed up, 
+thus we might as well just decompose $T_{p_{k+1}}$ with respect to $K$. 
+%We can keep decomposing $K$ for $p_{k+1}$ and onward, 
+%but how do we know when to stop?
+
+We repeat this decomposition, continuing to cut down.  
+The important part is knowing when to throw away subspaces, 
+which allows our algorithm to terminate.  
+Abelian varieties will have non-integral eigenvalues, 
+so will be thrown out when we decompose $T_{p_{k+1}}$ with respect to $K$.  
+To check if a subspaces is an integral oldform, 
+we check to see if it has $a_p$'s corresponding FINISH THIS!!
+%mention decomposition maps and the formula we have
+% how we know which spaces could come from old forms.
+
+The following is the second step:
+
+\begin{enumerate}
+\item Compute all proper divisors $M$ of $N$.
+\item For each $M$, we know the integral newforms and their $a_p$ lists.  
+So we compare these lists with the eigenvalues of $K$.  
+If they are the same, we can check what the dimension $d_M$ of the old forms from $M$ should be in $H(N)$.  
+If $d = d_M$, we're done.
+\item Otherwise, we cut down again by taking the hecke matrix $T_{p_{k+1}}$ and decomposing with respect to the subspaces $K$, 
+i.e., we find the eigenspaces of $T_{p_{k+1}}$ with eigenvectors $s \in S$.  
+This breaks the space $K$ up into the subspaces of $S$ corresponding to particular eigenvalues.
+If a subspace $K'$ of $K$ has dimension one and corresponds to an eigenvalue with the Hasse bound, 
+we store it and continue.  
+If $K'$ has dimension greater than one, 
+we go back to $1$ and repeat.
+\end{enumerate}
+
+\subsection{Faster methods for computing the kernel of $T_p - a$.}
+
+
+\section{Long Term Goal}
+Find all newforms of a given level and use this to examine rank records for abelian varieties.
+
+
+
+
+\end{document}

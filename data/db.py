@@ -242,8 +242,8 @@ def is_rational_old(s, v, primes, N):
                     all_eigs_same = False
                     break
             if all_eigs_same:
-                return True
-    return False
+                return True, M
+    return False, None
 
 def compute_rational_eigenvectors(s, N, bound=100):
     """
