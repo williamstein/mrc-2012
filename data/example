@@ -2,8 +2,9 @@ This is an example of how git works.
 
 
 The following is an example of using the database in Sage:
+First, make sure db.py is in your path, or you are in /mrc-2012/data/
 
-sage: load('/mnt/SSD1/mrc/mrc-2012/data/db.py')
+sage: from db import *
 sage: from psage.modform.hilbert.sqrt5.hmf import *
 sage: N = F.prime_above(31)
 sage: s = session()   
