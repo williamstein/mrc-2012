@@ -13,6 +13,12 @@ Time: CPU 3897.44 s, Wall: 4031.48 s
 Using Sage's sparse linear algebra, this takes 3.3 hours:
 
 sage: set_verbose(2)
+import sage.modular.hilbert.sqrt5_fast
+F.<a> = NumberField(x^2-x-1)
+N = F.primes_above(1209079)[0]
+I = sage.modular.hilbert.sqrt5_fast.IcosiansModP1ModN(N)
+t = I.hecke_matrix(F.prime_above(2), eclib=False).change_ring(GF(previous_prime(2^15)))
+
 sage: time b = a.echelon_form()
 verbose 1 (sparse_matrix_pyx matrix_modint echelon)
 verbose 2 (matrix_modn_sparse echelon) on column 2016 of 20152
@@ -27,3 +33,51 @@ verbose 2 (matrix_modn_sparse echelon) on column 18144 of 20152
 Time: CPU 11410.99 s, Wall: 12128.91 s
 
 
+Using our new code:
+
+set_verbose(2)
+import sage.modular.hilbert.sqrt5_fast
+F.<a> = NumberField(x^2-x-1)
+N = F.primes_above(1209079)[0]
+I = sage.modular.hilbert.sqrt5_fast.IcosiansModP1ModN(N)
+t = I.hecke_matrix(F.prime_above(2), eclib=False).change_ring(GF(previous_prime(2^15)))
+
+# or
+
+time t._echelon_in_place_classical(density_cutoff=0.05)
+Time: CPU 164.19 s, Wall: 165.13 s
+
+
+-----------------------------
+
+The curve:
+
+F.<a> = NumberField(x^2 - x - 1)
+E = EllipticCurve(F, [1, -1, 0, -8-12*a, 19+30*a])
+from psage.lseries.eulerprod import LSeries
+L = LSeries(E)
+sage: L.number_of_coefficients(53)
+116888
+sage: L.number_of_coefficients(10)
+17007
+sage: L.number_of_coefficients(6)
+13254
+
+Bober says that with his code:
+
+The precision of computing L(1) with all primes of norm < n for a curve of
+norm-conductor N should be something like exp(-2pi n^(1/2) / (N^(1/4) 5^(1/2) ) ).
+For the curve above, this means:
+
+sage: error(n, N) = exp(-2*pi*sqrt(n)/(N^(1/4)*sqrt(5)))
+sage: N = E.conductor().norm()
+sage: RR(error(1000, N))
+0.0685858334634427
+sage: RR(error(4000, N)) 
+0.00470401655187510
+sage: RR(error(10000, N))
+0.000208857515081547
+sage: RR(error(20000, N)) 
+6.24427626391156e-6
+
+which seems in line with the accuracy of actual computations.
