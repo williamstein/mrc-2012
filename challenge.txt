@@ -53,6 +53,14 @@ Time: CPU 164.19 s, Wall: 165.13 s
 The curve:
 
 F.<a> = NumberField(x^2 - x - 1)
-E = EllipticCurve([1, -1, 0, -8-12*a, 19+30*a])
+E = EllipticCurve(F, [1, -1, 0, -8-12*a, 19+30*a])
 from psage.lseries.eulerprod import LSeries
-L = LSeries(E.change_ring(F))
+L = LSeries(E)
+sage: L.number_of_coefficients(53)
+116888
+sage: L.number_of_coefficients(10)
+17007
+sage: L.number_of_coefficients(6)
+13254
+
+Bober says that with his code:
