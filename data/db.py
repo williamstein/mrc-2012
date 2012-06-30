@@ -535,7 +535,7 @@ class LSeries(LSeriesAbstract):
             return 1 - ap*(T**f) + q*(T**(2*f))
                            
     
-def find_all_curves(B1, B2, verb=False, ncpu=4):
+def find_all_curves(B1, B2, verb=False, ncpu=4, maxtime=60*30):
     from  sage.modular.hilbert.sqrt5_hmf import F, QuaternionicModule
     from sage.all import cputime
     
@@ -547,6 +547,8 @@ def find_all_curves(B1, B2, verb=False, ncpu=4):
         
     @parallel(ncpu)
     def f(N):
+        from sage.misc.all import alarm, cancel_alarm
+        alarm(maxtime)
         from sqlalchemy import create_engine
         from sqlalchemy.orm import sessionmaker
         engine = create_engine('postgresql://mrc@geom.math.washington.edu:6432/mrc2', echo=False)
@@ -573,7 +575,8 @@ def find_all_curves(B1, B2, verb=False, ncpu=4):
         M.rational_oldform_dimension = int(rational_oldform_dimension)
         M.time_to_compute_newforms = cputime(t)
         s.commit()
-        
+
+        cancel_alarm()
         return N.norm(), cputime(t), len(V)
 
     if ncpu > 1:
