@@ -547,7 +547,7 @@ def find_all_curves(B1, B2, verb=False, ncpu=4, maxtime=60*30):
         
     @parallel(ncpu)
     def f(N):
-        from sage.misc.all import alarm, cancel_alarm
+        from sage.misc.misc import alarm, cancel_alarm
         alarm(maxtime)
         from sqlalchemy import create_engine
         from sqlalchemy.orm import sessionmaker
