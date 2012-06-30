@@ -3,7 +3,7 @@
 ########################################################
 
 from sqlalchemy import create_engine
-engine = create_engine('postgresql://mrc@geom.math.washington.edu:6432/mrc', echo=False)
+engine = create_engine('postgresql://mrc@geom.math.washington.edu:6432/mrc2', echo=False)
 #engine = create_engine('sqlite:///')
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -25,14 +25,16 @@ class Space(Base):
     x = Column(Integer)
     y = Column(Integer)
     z = Column(Integer)
-    nf_bound = Column(Integer)      # upper bound on number of rational newforms
+    number_of_rational_newforms = Column(Integer)
+    rational_oldform_dimension = Column(Integer)
+    time_to_compute_newforms = Column(Float)
     __table_args__ = (    
         UniqueConstraint(x,y,z),
     )
 
     def hmf(self):
-        from psage.modform.hilbert.sqrt5.hmf import HilbertModularForms
-        return HilbertModularForms(tuple_to_ideal((self.x,self.y,self.z)))
+        from  sage.modular.hilbert.sqrt5_hmf import QuaternionicModule
+        return QuaternionicModule(tuple_to_ideal((self.x,self.y,self.z)))
     
     def level(self):
         return tuple_to_ideal((self.x,self.y,self.z))
@@ -153,6 +155,7 @@ def store_space(s, H):
     V.dimension = H.dimension()
     s.add(V)
     s.commit()
+    return V
 
 def canonically_scale(v):
     v = v.denominator() * v
@@ -164,7 +167,7 @@ def canonically_scale(v):
 def ns_str(t):
     return ''.join(str(t).split())
 
-def store_rational_newform(s, M, v, vdual):
+def store_rational_newform(s, M, v=None, vdual=None):
     """
     M = ambient Hilbert modular forms space
     v = rational eigenvector
@@ -174,8 +177,10 @@ def store_rational_newform(s, M, v, vdual):
     x,y,z = ideal_to_tuple(M.level())
     V = s.query(Space).filter(Space.x==x).filter(Space.y==y).filter(Space.z==z).one()
     f = RationalNewform()
-    f.vector = ns_str(canonically_scale(v))
-    f.dual_vector = ns_str(canonically_scale(vdual))
+    if v is not None:
+        f.vector = ns_str(canonically_scale(v))
+    if vdual is not None:
+        f.dual_vector = ns_str(canonically_scale(vdual))
     V.rational_newforms.append(f)
     return f
 
@@ -190,15 +195,16 @@ def get_space(s, N):
     return s.query(Space).filter(Space.x==x).filter(Space.y==y).filter(Space.z==z).one()
     
 
-def know_all_rational_eigenvectors(s, N):
+def know_all_rational_newforms(s, N):
     """
     Return True if we know all rational eigenvectors of level N.
-
-    This is by definition that nf_bound equals the number of recorded
-    rational newforms.
     """
-    H = get_space(s, N)
-    return H.nf_bound == len(H.rational_newforms)
+    x,y,z = ideal_to_tuple(N)
+    q = s.query(Space).filter(Space.x==x).filter(Space.y==y).filter(Space.z==z)
+    if q.count() == 0:
+        return False
+    H = q.one()
+    return H.number_of_rational_newforms == len(H.rational_newforms)
     
 ########################################################
 # Computing Data
@@ -232,7 +238,7 @@ def is_rational_old(s, v, primes, N):
     print 'w', w
     for M in proper_divisors(N):
         #print 'in for loop on M = ', M
-        if not know_all_rational_eigenvectors(s, M):
+        if not know_all_rational_newforms(s, M):
             #print 'no enough info, trying again'
             return False, None #I want to keep the space and try again later.
             #raise RuntimeError, "all newforms of level %s (norm=%s) not known so we can't tell if this is a rational newform or not"%(M, M.norm())
@@ -267,7 +273,7 @@ def compute_rational_eigenvectors(s, N, bound=100):
     """
     # First do a query to see if we already know *all* of the rational
     # eigenvectors.
-    if know_all_rational_eigenvectors(s, N):
+    if know_all_rational_newforms(s, N):
         print "We already know all rational eigenvectors at level %s (of norm %s)"%(N, N.norm())
         return 
     H = get_space(s, N)
@@ -292,7 +298,7 @@ def compute_rational_eigenvectors(s, N, bound=100):
         for i in range(len(v)):
             if v[i] != '?':
                 f.store_eigenvalue(primes[i], int(v[i]))
-    H.nf_bound = num_forms
+    H.number_of_rational_newforms = num_forms
     s.commit()
               
 def compute_rational_eigenvectors_range(s, B1, B2, bound=100):
@@ -322,7 +328,7 @@ def compute_more_rational_eigenvalues(s, N, bound):
     given space up to the given bound.  Commits result to database only
     if it succeeds at computing all the (good) eigenvalues.
     """
-    if not know_all_rational_eigenvectors(s, N):
+    if not know_all_rational_newforms(s, N):
         print "Can't compute more rational eigenvalues until we know all rational eigenvectors at level %s (of norm %s)"%(N, N.norm())
         return
     NrmN = N.norm()
@@ -528,9 +534,51 @@ class LSeries(LSeriesAbstract):
         else:
             return 1 - ap*(T**f) + q*(T**(2*f))
                            
-
-
     
+def find_all_curves(B1, B2, verb=False, ncpu=4):
+    from  sage.modular.hilbert.sqrt5_hmf import F, QuaternionicModule
+    from sage.all import cputime
+    
+    v = []
+    for N in sum([y for x,y in sorted(F.ideals_of_bdd_norm(B2).iteritems())],[]):
+        if N.norm() == 1: continue
+        if N.norm() < B1: continue
+        v.append(N)
+        
+    @parallel(ncpu)
+    def f(N):
+        from sqlalchemy import create_engine
+        from sqlalchemy.orm import sessionmaker
+        engine = create_engine('postgresql://mrc@geom.math.washington.edu:6432/mrc2', echo=False)
+        s = sessionmaker(bind=engine)()
+        t = cputime()
+        x,y,z = ideal_to_tuple(N)
+        q = s.query(Space).filter(Space.x==x).filter(Space.y==y).filter(Space.z==z)
+        if q.count() > 0:
+            M = q.one()
+            if M.number_of_rational_newforms == len(M.rational_newforms):
+                return "Already done with level %s (norm = %s)"%(N, N.norm())
+            H = M.hmf()
+        else:
+            H = QuaternionicModule(N)
+            M = store_space(s, H)
+        V, rational_oldform_dimension = H.dual_rational_newforms(verb=verb)
+        for vdual, aplist in V:
+            f = RationalNewform()
+            for p, ap in aplist:
+                f.store_eigenvalue(p, ap)
+            M.rational_newforms.append(f)
+            f.dual_vector = ns_str(canonically_scale(vdual))
+        M.number_of_rational_newforms = len(V)
+        M.rational_oldform_dimension = int(rational_oldform_dimension)
+        M.time_to_compute_newforms = cputime(t)
+        s.commit()
+        
+        return N.norm(), cputime(t), len(V)
 
-    
-    
+    if ncpu > 1:
+        for X in f(v):
+            print X
+    else:
+        for X in v:
+            print X, f(X)
