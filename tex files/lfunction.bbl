@@ -1,0 +1,22 @@
+\providecommand{\bysame}{\leavevmode\hbox to3em{\hrulefill}\thinspace}
+\providecommand{\MR}{\relax\ifhmode\unskip\space\fi MR }
+% \MRhref is called by the amsart/book/proc definition of \MR.
+\providecommand{\MRhref}[2]{%
+  \href{http://www.ams.org/mathscinet-getitem?mr=#1}{#2}
+}
+\providecommand{\href}[2]{#2}
+\begin{thebibliography}{1}
+
+\bibitem{bump}
+D.~Bump, \emph{Automorphic forms and representations}, Cambridge Studies in
+  Advanced Mathematics, vol.~55, Cambridge University Press, 1998.
+
+\bibitem{cohen}
+H.~Cohen, \emph{Number theory volume 1: Tools and diophantine equations},
+  Graduate Texts in Mathematics, vol. 239, Springer, 2004.
+
+\bibitem{dembele}
+L.~Demb\'{e}l\'{e}, \emph{An algorithm for modular elliptic curves over real
+  quadratic fields}, Experiment. Math. \textbf{17} (2007), 427--438.
+
+\end{thebibliography}
