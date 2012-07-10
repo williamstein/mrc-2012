@@ -217,11 +217,11 @@ def compute_spaces(s, B1, B2):
     B1, B2 = integers
     """
     B1 = max(2,B1)
-    from psage.modform.hilbert.sqrt5.hmf import HilbertModularForms
+    from  sage.modular.hilbert.sqrt5_hmf import QuaternionicModule
     v = F.ideals_of_bdd_norm(B2)
     for I in sum([z for _, z in v.iteritems()],[]):
         if I.norm() >= B1:
-            store_space(s, HilbertModularForms(I))
+            store_space(s, QuaternionicModule(I))
 
 def proper_divisors(N):
     return [I for I in divisors(N) if I!=1 and I!=N]
@@ -275,7 +275,7 @@ def compute_rational_eigenvectors(s, N, bound=100):
     # eigenvectors.
     if know_all_rational_newforms(s, N):
         print "We already know all rational eigenvectors at level %s (of norm %s)"%(N, N.norm())
-        return 
+        return
     H = get_space(s, N)
     M = H.hmf()
     primes = primes_of_bounded_norm(bound)
@@ -331,18 +331,21 @@ def compute_more_rational_eigenvalues(s, N, bound):
     if not know_all_rational_newforms(s, N):
         print "Can't compute more rational eigenvalues until we know all rational eigenvectors at level %s (of norm %s)"%(N, N.norm())
         return
+    else:
+        print "Computing more rational eigenvalues for eigenvectors of level %s (of norm %s)"%(N, N.norm())
     NrmN = N.norm()
     H = get_space(s, N)
     M = H.hmf()
     V = M.vector_space()
     I = M._icosians_mod_p1
+    import sys
     for f in H.rational_newforms:
-        vector = V(eval(f.vector))
-        j = vector.nonzero_positions()[0]
+        vector = V(eval(f.vector)) if f.vector is not None else None
         dual_vector = V(eval(f.dual_vector))
         i = dual_vector.nonzero_positions()[0]
         c = dual_vector[i]
         for P in primes_of_bounded_norm(bound):
+            print P,; sys.stdout.flush()
             Ps = P.sage_ideal()
             # 1. Do we already know this eigenvalue or not?
             if s.query(RationalEigenvalue).filter(
@@ -362,7 +365,11 @@ def compute_more_rational_eigenvalues(s, N, bound):
                 if (Ps*Ps).divides(N):
                     ap = 0
                 elif not Ps.divides(N):
-                    ap = (vector*M.hecke_matrix(Ps))[j] / vector[j]
+                    if vector is None:
+                        print "You need to compute subspace vector to compute a_p at present."
+                    else:
+                        j = vector.nonzero_positions()[0]
+                        ap = (vector*M.hecke_matrix(Ps))[j] / vector[j]
                 else:
                     # we have no algorithm directly at present to decide if this is 1 or -1.
                     print "Can't compute ap for p=%s"%P
@@ -373,7 +380,7 @@ def compute_more_rational_eigenvalues(s, N, bound):
 
 def compute_more_rational_eigenvalues_in_parallel(B1, B2, bound, ncpus=8):
     print "Preloading Hecke operator sets before forking."
-    from psage.modform.hilbert.sqrt5.sqrt5 import hecke_elements
+    from sage.modular.hilbert.sqrt5 import hecke_elements
     for P in primes_of_bounded_norm(bound):
         print P, len(hecke_elements(P.sage_ideal()))
     
