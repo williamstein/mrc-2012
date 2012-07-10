@@ -1,0 +1,417 @@
+\documentclass{article}
+
+\usepackage{amsfonts, amssymb, amsthm, fullpage, amsmath}
+
+\DeclareMathOperator{\Tr}{Tr}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+
+\begin{document}
+
+Let $F$ be a totally real quadratic field of narrow class group $1$, so that every ideal of $F$ has a totally positive generator. Further, let $f$ be a Hilbert modular eigenform of parallel weight $(2,2)$ and level $\mathfrak{N}$ for $F$. We will write $\mathcal{O}$ for the ring of integers of $F$, $\mathcal{O}_+$ for the totally real elements of $\mathcal{O}$, and $\mathfrak{a}$ for an integral ideal of $\mathcal{O}$. Furthermore, let $N$ be a totally positive generator of $\mathfrak{N}$, $d$ be a totally positive generator of the different of $F$, $D$ be the discriminant of $F$. To ease notation, we fix once and for all an embedding $\sigma$ of $F$ into $\mathbb{R}$ and whenever we need to think of an element $a \in F$ as an element of $\mathbb{R}$, we will write $a$ for $\sigma(a)$. For example, we write simply $a >0$ for $\sigma(a)>0$.  Further, for $a \in F$, we denote by $\bar{a}$ the image of $a$ under the non-trivial field automorphism of $F$, and we write $\mathbb{N}(a)=a\bar{a}$. Finally, we write $\epsilon$ for a fundamental unit of $F$ such that $\epsilon>0$ and $\bar{\epsilon}<0$. (Such a choice is always possible since $F$ has narrow class group $1$, so that it has units of every possible sign combination. This implies the existence of such a fundamental unit.)
+
+In our particular case, $F=\mathbb{Q}(\sqrt{5})$ so that $D=5$. Some convenient choices for the quantities above are $\epsilon=\frac{1+\sqrt{5}}{2}$, and $d=\sqrt{5}/\epsilon$.
+
+$f$ has a Fourier expansion:
+\begin{equation*}
+f(z)=\sum_{v \in \mathcal{O}_+} a_v \exp\left(2\pi i\Tr \frac{v z}{d}\right)
+\end{equation*}
+where
+\begin{equation*}
+\Tr(\alpha z) = \alpha z_1 + \bar{\alpha}z_2 \qquad \text{for} \quad z=(z_1, z_2) \in \mathbb{H}^2 \quad \text{and} \quad \alpha \in F,
+\end{equation*}
+(the fact that the sum can be restricted to the totally real elements is a theorem (the Koecher principle), and we do not need $v=0$ since $f$ is a cusp form) and a completed $L$-function
+\begin{align*}
+\Lambda(s,f) & = \frac{1}{(2\pi)^{2s}} \Gamma(s)^2 \mathbb{N}(N)^{s/2} D^s L(s,f)\\
+&= \frac{1}{(2\pi)^{2s}} \Gamma(s)^2 \mathbb{N}(N)^{s/2} D^s \sum_{\mathfrak{a}}a_{\mathfrak{a}}\mathbb{N}(\mathfrak{a})^{-s}.
+\end{align*}
+(The fact that the Fourier coefficients can be defined on ideals rather than totally positive elements is a lemma, see \cite[Section 1.7]{bump}.)
+%( It follows from the fact that every totally positive unit is the square of a unit, say $\mu = \mu_1^2$, where $\mu_1$ is a unit which is not necessarily totally positive. Then using that $f$ is modular with respect to $\left(\begin{smallmatrix} \mu_1 & 0 \\ 0 & \mu_1^{-1} \end{smallmatrix}\right)$, we get that $f(\mu z)=f(z)$, which implies that $a_{\mu v}= a_{v}$.)
+Also, because $f$ is an eigenform, it is also an eigenform for the Atkin-Lehner involution $W_N$ with eigenvalue $\epsilon_N= \pm 1$:
+\begin{equation*}
+f\left(\frac{-1}{Nz_1},\frac{-1}{\bar{N}z_2} \right)=\epsilon_N \mathbb{N}(N)z_1^2z_2^2f(z_1, z_2).
+\end{equation*}
+
+\subsection{Proving and Improving some of Demb\'{e}l\'{e}'s assertions}
+
+\begin{proposition}
+We have that:
+\begin{equation*}
+\Lambda(s,f)= \int_{\mathcal{O}_+^*\backslash \mathbb{R}^2_+} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2
+\end{equation*}
+\end{proposition}
+
+\begin{proof}
+We have
+\begin{align*}
+\int_{\mathcal{O}_+^*\backslash \mathbb{R}^2_+} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2 &= \int_{\mathcal{O}_+^*\backslash \mathbb{R}^2_+} \sum_{v \in \mathcal{O}_+} a_v \exp\left( -2\pi \left(\frac{vy_1}{\sqrt{N} d}+\frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}  \right)\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2\\
+&= \sum_{\mathfrak{a}} a_{\mathfrak{a}} \int_{\mathcal{O}_+^*\backslash \mathbb{R}^2_+} \sum_{\substack{\mathfrak{a}=(\alpha)\\ \alpha \in \mathcal{O}_+ }} \exp\left( -2\pi \left(\frac{\alpha y_1}{\sqrt{N} d}+\frac{\bar{\alpha} y_2}{\sqrt{\bar{N}}\bar{d}}  \right)\right)  y_1^{s-1}y_2^{s-1} dy_1 dy_2\\
+& = \sum_{\alpha \in \mathcal{O}_+^* \backslash \mathcal{O}_+} \sum_{\mu \in \mathcal{O}_+^*} a_{\alpha \mathcal{O}} \int_{\mathcal{O}_+^*\backslash \mathbb{R}^2_+} \exp\left( -2\pi \left(\frac{\alpha \mu y_1}{\sqrt{N} d}+\frac{\bar{\alpha}\bar{\mu} y_2}{\sqrt{\bar{N}}\bar{d}}  \right)\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2\\
+& = \sum_{\alpha \in \mathcal{O}_+^* \backslash \mathcal{O}_+} a_{\alpha \mathcal{O}} \int_{\mathbb{R}^2_+} \exp\left( -2\pi \left(\frac{\alpha y_1}{\sqrt{N} d}+\frac{\bar{\alpha} y_2}{\sqrt{\bar{N}}\bar{d}}  \right)\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2\\
+&= \sum_{\alpha \in \mathcal{O}_+^* \backslash \mathcal{O}_+} a_{\alpha \mathcal{O}} (2 \pi)^{-2s} \left(\frac{\sqrt{N}d}{\alpha}\right)^s\left(\frac{\sqrt{\bar{N}}\bar{d}}{\bar{\alpha}}\right)^s \Gamma(s)^2\\
+&= \frac{1}{(2\pi)^{2s}} \Gamma(s)^2 \mathbb{N}(N)^{s/2} \mathbb{N}(d)^s \sum_{\alpha \in \mathcal{O}_+^* \backslash \mathcal{O}_+} a_{\alpha \mathcal{O}} \mathbb{N}(\alpha)^{-s}  
+\end{align*}
+Using that  $\mathbb{N}(d)=D$, $\mathbb{N}(\alpha)= \mathbb{N}(\mathfrak{a})$, and that every ideal is generated by a totally positive element, this completes the proof.
+\end{proof}
+
+\textbf{Our completed $L$-function is different from Demb\'{e}l\'{e}'s, which is not necessarily obvious at first since he tends to affirm things without proof (hence this whole section). Here is what I know: He defines $L(s,f)$ the same way we do, as the sum $\sum_{\mathfrak{a}}a_{\mathfrak{a}}\mathbb{N}(\mathfrak{a})^{-s}$. But then later on, in the proof of Lemma 2 \cite{dembele}, he writes that by definition
+\begin{equation*}
+L(f,1)= \int_{\mathcal{O}_+^*\backslash \mathbb{R}^2_+} f\left(iy_1,iy_2\right) dy_1 dy_2.
+\end{equation*}
+(Notice there are no $\sqrt{N}$'s in the denominator, and he says this is the $L$-function, not the completed $L$-function.) Now I think that he could be lifting this from Bump's book, who only tackles level $1$ and therefore does not have any $\sqrt{N}$'s floating around. In Bump's book this is clearly a formula for the \emph{completed} $L$-function, not the $L$-function, and Demb\'{e}l\'{e} might just not be very careful about the distinction. I get the $\sqrt{N}$'s in the denominators because of the factor of $\mathbb{N}(N)^{s/2}$ in our definition of the completed $L$-function. I personally think that it should be there, but I could never find a reference. I'd like someone else to weigh in on this. Later on, we see that our formula satisfies the functional equation, and I don't think that Demb\'{e}l\'{e}'s does. (I went through the computation once, but I will go through it again to make sure because this stuff gets complicated and I get bored and I make mistakes.)}
+
+A fundamental domain for $\mathcal{O}_+^*\backslash \mathbb{R}^2_+$ is given by $0<y_1$ and $\tau_0 \leq y_2 < \epsilon^2 \tau_0$, where $\tau_0$ is any positive real number. Thus
+\begin{equation*}
+\Lambda(s,f)= \int_{\tau_0}^{\epsilon^2 \tau_0}\int_{0}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2.
+\end{equation*}
+
+For any positive constant $A$, consider the integral  
+\begin{align*}
+\int_{\tau_0}^{\epsilon^2 \tau_0}\int_{0}^{A} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2 .
+\end{align*}
+Doing the change of variable $u_1=\frac{1}{y_1}$ $u_2=\frac{1}{y_2}$ and choosing $\tau_0=\frac{1}{\epsilon}$ we have:
+\begin{align*}
+\int_{\tau_0}^{\epsilon^2 \tau_0}\int_{0}^{A} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2 
+&= \int_{\epsilon}^{1/\epsilon}\int_{\infty}^{1/A} f\left(\frac{i}{\sqrt{N}u_1},\frac{i}{\sqrt{\bar{N}}u_2}\right) u_1^{-(s+1)} u_2^{-(s+1)} du_1 du_2\\
+&=  \int_{1/\epsilon}^{\epsilon}\int^{\infty}_{1/A} f\left(\frac{i}{\sqrt{N}u_1},\frac{i}{\sqrt{\bar{N}}u_2}\right) u_1^{-(s+1)} u_2^{-(s+1)} du_1 du_2.
+\end{align*}
+But 
+\begin{align*}
+f\left(\frac{i}{\sqrt{N}u_1},\frac{i}{\sqrt{\bar{N}}u_2}\right)&= \epsilon_N \mathbb{N}(N)\left(\frac{iu_1}{\sqrt{N}}\right)^2\left(\frac{iu_2}{\sqrt{\bar{N}}}\right)^2 f\left(\frac{iu_1}{\sqrt{N}},\frac{iu_2}{\sqrt{\bar{N}}}\right)\\
+&= \epsilon_N u_1^2 u_2^2 f\left(\frac{iu_1}{\sqrt{N}},\frac{iu_2}{\sqrt{\bar{N}}}\right).
+\end{align*}
+So that
+\begin{align*}
+\int_{1/\epsilon}^{\epsilon}\int_{0}^{A} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) y_1^{s-1}y_2^{s-1}   dy_1 dy_2&=
+\epsilon_N \int_{1/\epsilon}^{\epsilon} \int_{1/A}^{\infty} f\left(\frac{iu_1}{\sqrt{N}},\frac{iu_2}{\sqrt{\bar{N}}}\right) u_1^{1-s}u_2^{1-s}du_1 du_2.
+\end{align*}
+Thus we have, still with our choice of $\tau_0=1/\epsilon$:
+\begin{align}\label{niceformula}
+\Lambda(s,f)&= \int_{1/\epsilon}^{\epsilon}\int_{A}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2 + \epsilon_N \int_{1/\epsilon}^{\epsilon} \int_{1/A}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) y_1^{1-s}y_2^{1-s} dy_1 dy_2.
+\end{align}
+And with $A=1$, we have:
+\begin{align}
+\Lambda(s,f)&= \int_{1/\epsilon}^{\epsilon}\int_{1}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2 + \epsilon_N \int_{1/\epsilon}^{\epsilon} \int_{1}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) y_1^{1-s}y_2^{1-s} dy_1 dy_2,
+\end{align}
+from which one can see that $\Lambda(s,f)=\epsilon_N \Lambda(2-s,f)$, so that our completed $L$-function satisfies a functional equation.
+
+Recall the incomplete gamma function, for $\mathfrak{R}(x)>0$ and $s \in \mathbb{C}$:
+\begin{equation*}
+\Gamma(s, x)=x^s\int_1^{\infty}e^{-xt}t^s \frac{dt}{t}
+\end{equation*}
+
+\begin{proposition}\label{Lambda}
+There is a formula for $\Lambda(s,f)$ where we can vary a parameter $A$, where $A$ is a positive real number.
+\end{proposition}
+
+\begin{proof}
+We follow a hybrid of the technique outlined in Demb\'{e}l\'{e}'s paper \cite{dembele} and that in Cohen's book \cite{cohen}.
+Consider the integral
+\begin{equation}\label{firstintegral}
+\begin{split}
+\int_{1/\epsilon}^{\epsilon}\int_{A}^{\infty} &f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) y_1^{s-1}y_2^{s-1} dy_1 dy_2 \\
+&= \sum_{v \in \mathcal{O}_+} a_v  \int_{1/\epsilon}^{\epsilon} \exp \left( \frac{ -2\pi\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) y_2^{s-1} dy_2 \int_{A}^{\infty} \exp\left(  \frac{-2\pi vy_1}{\sqrt{N} d}\right) y_1^{s-1} dy_1\\
+&= \left(\frac{\mathbb{N}(N)^{1/2}D}{4\pi^2}\right)^s \sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)^s} \Gamma\left(s, \frac{2\pi v A}{\sqrt{N}d}\right) \left(\Gamma\left(s,\frac{2 \pi \bar{v}}{\sqrt{\bar{N}}\bar{d} \epsilon} \right)-  \Gamma\left(s,\frac{2 \pi \bar{v}\epsilon}{\sqrt{\bar{N}}\bar{d} } \right) \right) 
+\end{split}
+\end{equation}
+Similarly,
+\begin{equation}\label{secondintegral}
+\begin{split}
+\int_{1/\epsilon}^{\epsilon}\int_{1/A}^{\infty} &f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) y_1^{1-s}y_2^{1-s} dy_1 dy_2 \\
+&= \sum_{v \in \mathcal{O}_+} a_v  \int_{1/\epsilon}^{\epsilon} \exp \left( \frac{ -2\pi\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) y_2^{1-s} dy_2 \int_{1/A}^{\infty} \exp\left(  \frac{-2\pi vy_1}{\sqrt{N} d}\right) y_1^{1-s} dy_1\\
+&= \left(\frac{\mathbb{N}(N)^{1/2}D}{4\pi^2}\right)^{2-s}\sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)^{2-s}} \Gamma\left(2-s, \frac{2\pi v }{A\sqrt{N}d}\right) \left(\Gamma\left(2-s,\frac{2 \pi \bar{v}}{\sqrt{\bar{N}}\bar{d} \epsilon} \right)-  \Gamma\left(2-s,\frac{2 \pi \bar{v}\epsilon}{\sqrt{\bar{N}}\bar{d} } \right) \right) 
+\end{split}
+\end{equation}
+Now adding the result of Equation \ref{firstintegral} and $\epsilon_N$ times the result of Equation \ref{secondintegral} gives the formula whose existence is asserted.
+\end{proof}
+
+In particular, when $s=1$, we get:
+\begin{equation*}
+\begin{split}
+\Lambda(1,f)= & \frac{\mathbb{N}(N)^{1/2}\mathbb{N}(d)}{4\pi^2} \sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)} \Gamma\left(1, \frac{2\pi v A}{\sqrt{N}d}\right) \left(\Gamma\left(1,\frac{2 \pi \bar{v}}{\sqrt{\bar{N}}\bar{d} \epsilon} \right)-  \Gamma\left(1,\frac{2 \pi \bar{v}\epsilon}{\sqrt{\bar{N}}\bar{d} } \right) \right) \\
+&+  \epsilon_N \frac{\mathbb{N}(N)^{1/2}\mathbb{N}(d)}{4\pi^2} \sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)} \Gamma\left(1, \frac{2\pi v }{A\sqrt{N}d}\right) \left(\Gamma\left(1,\frac{2 \pi \bar{v}}{\sqrt{\bar{N}}\bar{d} \epsilon} \right)-  \Gamma\left(1,\frac{2 \pi \bar{v}\epsilon}{\sqrt{\bar{N}}\bar{d} } \right) \right)\\
+= &  \frac{\mathbb{N}(N)^{1/2}\mathbb{N}(d)}{4\pi^2} \sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)} \left( \Gamma\left(1, \frac{2\pi v A}{\sqrt{N}d}\right) +\epsilon_N\Gamma\left(1, \frac{2\pi v }{A\sqrt{N}d}\right) \right)\left(\Gamma\left(1,\frac{2 \pi \bar{v}}{\sqrt{\bar{N}}\bar{d} \epsilon} \right)-  \Gamma\left(1,\frac{2 \pi \bar{v}\epsilon}{\sqrt{\bar{N}}\bar{d} } \right) \right)
+\end{split}
+\end{equation*}
+Since $\Gamma(1,x)=e^{-x}$, this ``simplifies" to:
+\begin{align*}
+\Lambda(1,f) & = \frac{\mathbb{N}(N)^{1/2} \mathbb{N}(d)}{4\pi^2} \sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)} \left( \exp\left(\frac{-2\pi vA}{\sqrt{N} d}\right) + \epsilon_N \exp\left(\frac{-2\pi v}{A\sqrt{N} d}\right) \right) \left( \exp \left(\frac{-2\pi \bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) -  \exp \left(\frac{-2\pi \bar{v}}{\epsilon\sqrt{\bar{N}}\bar{d}}\right)\right)\\
+& = \frac{\mathbb{N}(N)^{1/2} D}{4\pi^2} \sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)} \left( \exp\left(\frac{-2\pi vA\epsilon}{\sqrt{ND} }\right) + \epsilon_N \exp\left(\frac{-2\pi v\epsilon}{A\sqrt{ND}}\right) \right) \left( \exp \left(\frac{-2\pi \bar{v} }{\sqrt{\bar{N}D}}\right) -  \exp \left(\frac{-2\pi \bar{v}}{\epsilon^2\sqrt{\bar{N}D}}\right)\right)
+\end{align*}
+This formula can be used to compute the sign of the functional equation for $\Lambda(s,f)$. (The second expression has $D$ in it rather than $d$, since this is likely what we would use in practice. The very last exponential appearing in the expression (the one with $\epsilon^2$ in it) uses the fact that we are working with $F=\mathbb{Q}(\sqrt{5})$ and is not valid for a general real quadratic number field of narrow class number 1.)
+
+Our result agrees with the formula presented in Lemma 2 of \cite{dembele}, up to the factor of $\mathbb{N}(N)^{1/2}$, which was discussed earlier. We take this opportunity to note that in his paper, Demb\'{e}l\'{e} does not specify that this formula is only valid for $F=\mathbb{Q}(\sqrt{5})$, since it crucially uses that $\epsilon^2=\epsilon+1$. (He does have the assumption in his thesis.)
+
+\textbf{Kind of annoyingly, Demb\'{e}l\'{e} computes in fact
+\begin{equation*}
+\Lambda(s,f)= \int_{\tau_0}^{\epsilon^2 \tau_0}\int_{0}^{\infty} f\left(iy_1,iy_2\right)  dy_2 dy_1.
+\end{equation*}
+which explains why our formula is slight off from his. But either domains are a fundamental domain for the space $\mathcal{O}_+^*\backslash \mathbb{R}^2_+$. His formula is a bit cleaner to write, but I think that computationally they should be the same. To be completely explicit, Deb\'{e}l\'{e} has:
+\begin{equation*}
+\exp\left( \frac{-2\pi\bar{v}}{\sqrt{\bar{N}}\bar{d}}\right) \left(\exp\left(\frac{-2 \pi v \epsilon}{\sqrt{N} d}\right) - \exp \left( \frac{-2\pi v}{\epsilon \sqrt{N}d}\right) \right)
+\end{equation*}
+and we have
+\begin{equation*}
+\exp\left( \frac{-2\pi v}{\sqrt{N}d}\right) \left(\exp\left(\frac{-2 \pi \bar{v} \epsilon}{\sqrt{\bar{N}} \bar{d}}\right) - \exp \left( \frac{-2\pi \bar{v}}{\epsilon \sqrt{\bar{N}}\bar{d}}\right) \right)
+\end{equation*}
+In Demb\'{e}l\'{e}'s formula, $\frac{\epsilon}{d}=\frac{\epsilon+1}{\sqrt{D}}$ and $\frac{1}{\epsilon d}=\frac{1}{\sqrt{D}}$, so he can pull out a factor of $\exp\left(\frac{-2 \pi v}{\sqrt{D}}\right)$ from both terms to make things look good. In ours, $\frac{\epsilon}{\bar{d}}=\frac{1}{\sqrt{D}}$ and $\frac{1}{\epsilon \bar{d}}=\frac{1}{(\epsilon+1) \sqrt{D}}$, so we can't factor out anything. But the norms of the terms are the same, so it should not affect convergence. (Right?)}
+
+%Plugging in $A=1$ in this last equation, we have, when $F=\mathbb{Q}(\sqrt{5})$:
+%\begin{align*}
+%\Lambda(1,f)&=(1+\epsilon_N) \frac{\mathbb{N}(N)^{1/2} D}{4\pi^2} \sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)}  \exp\left(\frac{-2\pi v\epsilon}{\sqrt{ND} }\right) \left( \exp \left(\frac{-2\pi \bar{v} }{\sqrt{\bar{N}D}}\right) -  \exp \left(\frac{-2\pi \bar{v}}{\epsilon^2\sqrt{\bar{N}D}}\right)\right)\\
+%&=(1+\epsilon_N) \frac{\mathbb{N}(N)^{1/2} D}{4\pi^2} \sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)}  \exp\left(\frac{2 \pi}{\sqrt{D}} \left(\frac{\bar{v}\bar{\epsilon}}{\sqrt{\bar{N}}}-\frac{v}{\sqrt{N}}\right) \right) \left( 1 - \exp \left( \frac{-2\pi v \epsilon}{\sqrt{ND}}\right) \right)
+%\end{align*}
+
+
+\subsection{Now the derivatives}
+
+Recall that we have:
+\begin{equation*}
+\begin{split}
+\Lambda(s,f)=& \left(\frac{\mathbb{N}(N)^{1/2}D}{4\pi^2}\right)^s \sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)^s} \Gamma\left(s, \frac{2\pi v }{\sqrt{N}d}\right) \left(\Gamma\left(s,\frac{2 \pi \bar{v}}{\sqrt{\bar{N}}\bar{d} \epsilon} \right)-  \Gamma\left(s,\frac{2 \pi \bar{v}\epsilon}{\sqrt{\bar{N}}\bar{d} } \right) \right) \\
+&+ \epsilon_N \left(\frac{\mathbb{N}(N)^{1/2}D}{4\pi^2}\right)^{2-s}\sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)^{2-s}} \Gamma\left(2-s, \frac{2\pi v }{\sqrt{N}d}\right) \left(\Gamma\left(2-s,\frac{2 \pi \bar{v}}{\sqrt{\bar{N}}\bar{d} \epsilon} \right)-  \Gamma\left(2-s,\frac{2 \pi \bar{v}\epsilon}{\sqrt{\bar{N}}\bar{d} } \right) \right)
+\end{split}
+\end{equation*}
+(This is the result of Proposition \ref{Lambda} with $A=1$.)
+
+We must now differentiate. Following Cohen \cite[Definition 8.5.12]{cohen}, we define the following functions by induction:
+\begin{equation*}
+\Gamma_{-1}(s,x)= e^{-x}x^s \qquad \text{and} \qquad \Gamma_r(s,x) = \int_x^{\infty}\frac{\Gamma_{r-1}(s,t)}{t}dt \quad \text{for } r\geq 0.
+\end{equation*}
+In particular, $\Gamma_0(s,x)=\Gamma(s,x)$ from before and $\Gamma_1(1,x)=E_1(x)$, the exponential integral.
+
+Cohen shows the following:
+\begin{lemma}[Proposition 8.5.15 of \cite{cohen}]
+For $r \geq 0$ and for any value of $x$ we have:
+\begin{equation*}
+\Gamma_r(s,x)=x^s \int_1^{\infty} \frac{(\ln t)^r}{r!}e^{-xt} t^s \frac{dt}{t}=\int_x^{\infty} \frac{(\ln(t/x))^r}{r!}e^{-t}t^s \frac{dt}{t}.
+\end{equation*}
+\end{lemma}
+
+As a consequence, 
+\begin{equation*}
+\frac{d}{ds} \Gamma_r(s,x)= \Gamma_r(s,x) \ln x +(r+1)\Gamma_{r+1}(s,x).
+\end{equation*}
+
+All of our formulae for derivatives of $\Lambda(s,f)$ will be in terms of these basic $\Gamma_r(s,x)$ functions. To implement the computation of these functions, we refer to Cohen \cite{cohen} Corollary 8.5.18 when $x \leq 10$ and Proposition 8.5.19 when $x \geq 10$. One might also want to read the Remarks on page 582 for discussions of convergence and accuracy.
+
+The computation of any derivative of $\Lambda(s,f)$ can easily but painfully be done using the following:
+\begin{lemma}\label{computation}
+Let $A$, $B$ and $C$ be positive real numbers and $r_1$ and $r_2$ be two positive integers. Then
+\begin{equation*}
+\begin{split}
+\frac{d^k}{ds^k} & \left( A^{s} \Gamma_{r_1}(s,B) \Gamma_{r_2}(s, C)\right)\\
+&= \sum_{i=0}^{k}\sum_{j=0}^{i}\binom{k}{i}\binom{i}{j} (\ln ABC)^{k-i} \prod_{l_1=1}^{j} (r_1+l_1) \prod_{l_2=1}^{i-j}(r_2+l_2)
+A^{s} \Gamma_{r_1+j}(s,B) \Gamma_{r_2+i-j}(s, C)
+\end{split}
+\end{equation*}
+where $\prod_{j=1}^{0} x =1$.
+\end{lemma}
+
+\begin{proof}
+Since $A$, $B$ and $C$ are fixed, we write $F(s, r_1, r_2)=A^{s} \Gamma_{r_1}(s,B) \Gamma_{r_2}(s, C)$. Then the Lemma reads:
+\begin{equation*}
+\frac{d^k}{ds^k}   F(s, r_1,r_2) = \sum_{i=0}^{k}\sum_{j=0}^{i}\binom{k}{i}\binom{i}{j} (\ln ABC)^{k-i} \prod_{l_1=1}^{j} (r_1+l_1) \prod_{l_2=1}^{i-j}(r_2+l_2)F(s, r_1+j,r_2+i-j)
+\end{equation*}
+
+We prove this by induction. For the case $k=1$ we have:
+\begin{equation*}
+\frac{d}{ds}  F(s, r_1,r_2) =\ln ABC \, F(s, r_1,r_2) + (r_1+1) F(s, r_1+1,r_2)+(r_2+1)F(s, r_1,r_2+1),
+\end{equation*}
+as claimed.
+
+Assuming the formula for $k$, we now prove it for $k+1$:
+\begin{align*}
+\frac{d^{k+1}}{ds^{k+1}} F(s, r_1,r_2) = & \sum_{i=0}^{k}\sum_{j=0}^{i}\binom{k}{i}\binom{i}{j} (\ln ABC)^{k-i} \prod_{l_1=1}^{j} (r_1+l_1) \prod_{l_2=1}^{i-j}(r_2+l_2)\frac{d}{ds}F(s, r_1+j,r_2+i-j)\\
+= & \sum_{i=0}^{k}\sum_{j=0}^{i}\binom{k}{i}\binom{i}{j} (\ln ABC)^{k-i+1} \prod_{l_1=1}^{j} (r_1+l_1) \prod_{l_2=1}^{i-j}(r_2+l_2)  F(s, r_1+j,r_2+i-j) \\
+& + \sum_{i=0}^{k}\sum_{j=0}^{i}\binom{k}{i}\binom{i}{j} (\ln ABC)^{k-i} \prod_{l_1=1}^{j+1} (r_1+l_1) \prod_{l_2=1}^{i-j}(r_2+l_2) F(s, r_1+j+1,r_2+i-j) \\
+& + \sum_{i=0}^{k}\sum_{j=0}^{i}\binom{k}{i}\binom{i}{j} (\ln ABC)^{k-i} \prod_{l_1=1}^{j} (r_1+l_1) \prod_{l_2=1}^{i-j+1}(r_2+l_2) F(s, r_1+j,r_2+i-j+1)\\
+\end{align*}
+
+We fix a pair $(m,n)$, and gather the coefficient of the term $F(s, r_1+m, r_2+n-m)$ in this sum:
+\begin{equation*}
+\begin{split}
+(\ln ABC)^{k-n+1} & \prod_{l_1=1}^{m} (r_1+l_1) \prod_{l_2=1}^{n-m}(r_2+l_2) \left( \binom{k}{n}\binom{n}{m} + \binom{k}{n-1}\binom{n-1}{m-1}+ \binom{k}{n-1}\binom{n-1}{m} \right) \\
+& = (\ln ABC)^{k-n+1}  \prod_{l_1=1}^{m} (r_1+l_1) \prod_{l_2=1}^{n-m}(r_2+l_2) \binom{k+1}{n} \binom{n}{m}
+\end{split}
+\end{equation*}
+
+\end{proof}
+
+For the convenience of the reader and whoever will implement this, we now write down the formulae we will need for $\Lambda^{(1)}(1,f)$ and $\Lambda^{(2)}(1,f)$.  To ease the notation, we set $A=\frac{\mathbb{N}(N)^{1/2}D}{4\pi^2\mathbb{N}(v)}$, $B=\frac{2\pi v }{\sqrt{N}d}$, $C_1=\frac{2 \pi \bar{v}}{\sqrt{\bar{N}}\bar{d} \epsilon}$ and $C_2=\frac{2 \pi \bar{v}\epsilon}{\sqrt{\bar{N}}\bar{d} }$, where $N$, $D$, $d$ and $\epsilon$ are as defined at the very beginning, and $v \in \mathcal{O}_+$. Thus $A$, $B$, $C_1$ and $C_2$, under our choice of embedding $\sigma$, can be thought of as positive real numbers. Then
+\begin{equation}\label{simpleLambda}
+\begin{split}
+\Lambda(s,f)= \sum_{v \in \mathcal{O}_+} a_v \left( \right. &A^s \Gamma_0(s, B)\Gamma_0(s,C_1)  - A^s\Gamma_0(s,B)\Gamma_0(s,C_2)  \\
+&+\left. \epsilon_N A^{2-s}\Gamma_0(2-s,B)\Gamma_0(2-s,C_1)-\epsilon_N A^{2-s}\Gamma_0(2-s,B)\Gamma_0(2-s,C_2) \right).
+\end{split}
+\end{equation}
+
+\begin{proposition}
+Suppose that $f$ is such that $\epsilon_N=-1$. Then
+\begin{equation*}
+\begin{split}
+\Lambda^{(1)}(1,f)=  2 \sum_{v \in \mathcal{O}_+}  a_v A  \left( \right. & - \ln \epsilon \, \Gamma_0(1, B)\Gamma_0(1,C_1)+\Gamma_0(1,B)\Gamma_1(1,C_1)+\Gamma_1(1,B)\Gamma_0(1,C_1) \\
+& - \left. \ln \epsilon \, \Gamma_0(1, B)\Gamma_0(1,C_2) - \Gamma_0(1,B)\Gamma_1(1,C_2) - \Gamma_1(1,B)\Gamma_0(1,C_2) \right).
+\end{split}
+\end{equation*}
+\end{proposition}
+
+\textbf{This is exactly the same as what we had before.}
+
+\begin{proof}
+We first compute $\Lambda^{(1)}(s,f)$. Applying Lemma \ref{computation} to Equation \ref{simpleLambda}, we have:
+\begin{equation*}
+\begin{split}
+\Lambda^{(1)}(s,f)= \sum_{v \in \mathcal{O}_+} & a_v \left( A^s\left( \ln (ABC_1) \Gamma_0(s, B)\Gamma_0(s,C_1)+\Gamma_0(s,B)\Gamma_1(s,C_1)+\Gamma_1(s,B)\Gamma_0(s,C_1)\right)  \right. \\
+&- A^s\left( \ln (ABC_2) \Gamma_0(s, B)\Gamma_0(s,C_2)+\Gamma_0(s,B)\Gamma_1(s,C_2)+\Gamma_1(s,B)\Gamma_0(s,C_2)\right)  \\
+&-\epsilon_N A^{2-s}\left( \ln (ABC_1) \Gamma_0(2-s, B)\Gamma_0(2-s,C_1)+\Gamma_0(2-s,B)\Gamma_1(2-s,C_1) + \Gamma_1(2-s,B)\Gamma_0(2-s,C_1)\right)\\
+& +\epsilon_N A^{2-s}\left( \ln (ABC_2) \Gamma_0(2-s, B)\Gamma_0(2-s,C_2)+\Gamma_0(2-s,B)\Gamma_1(2-s,C_2)+\Gamma_1(2-s,B)\Gamma_0(2-s,C_2)\right) \left.  \right)
+\end{split}
+\end{equation*}
+
+We now use our assumption that $\epsilon_N=-1$ and evaluate at $s=1$:
+\begin{equation*}
+\begin{split}
+\Lambda^{(1)}(1,f)= 2 \sum_{v \in \mathcal{O}_+} & a_v \left( A\left( \ln (ABC_1) \Gamma_0(1, B)\Gamma_0(1,C_1)+\Gamma_0(1,B)\Gamma_1(1,C_1)+\Gamma_1(1,B)\Gamma_0(1,C_1)\right)  \right. \\
+&- A\left( \ln (ABC_2) \Gamma_0(1, B)\Gamma_0(1,C_2)+\Gamma_0(1,B)\Gamma_1(1,C_2)+\Gamma_1(1,B)\Gamma_0(1,C_2)\right) \left. \right)
+\end{split}
+\end{equation*}
+
+Finally, we use that $ABC_1=1/\epsilon$ and $ABC_2=\epsilon$ to obtain the result of the Proposition.
+
+\end{proof}
+
+\begin{proposition}
+Suppose that $f$ is such that $\epsilon_N=1$ and $\Lambda(1,f)=0$. Then
+\begin{equation*}
+\begin{split}
+\Lambda^{(2)}(1,f)=  .
+\end{split}
+\end{equation*}
+\end{proposition}
+
+
+
+To get the derivatives of $\Lambda(s,f)$ we could take the derivative of this, like Cohen does, but it seems painful. Instead, we will use Equation \ref{niceformula}.
+
+We now tackle the derivatives. First, fixing $A=1$ in Equation \ref{niceformula}, we have
+\begin{equation*}
+\Lambda(s,f)= \int_{1/\epsilon}^{\epsilon}\int_{1}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) (y_1^{s-1}y_2^{s-1} + \epsilon_N y_1^{1-s}y_2^{1-s} )dy_1 dy_2 .
+\end{equation*}
+Differentiating $k$ times with respect to $s$, we get:
+\begin{equation*}
+\Lambda^{(k)}(s,f)= \int_{1/\epsilon}^{\epsilon}\int_{1}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) (\ln y_1+\ln y_2)^k(y_1^{s-1}y_2^{s-1} +(-1)^k \epsilon_N y_1^{1-s}y_2^{1-s} )dy_1 dy_2 ,
+\end{equation*}
+and evaluating at $s=1$ gives
+\begin{align*}
+\Lambda^{(k)}(1,f)&=  (1 +(-1)^k \epsilon_N) \int_{1/\epsilon}^{\epsilon} \int_{1}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) (\ln y_1+\ln y_2)^kdy_1 dy_2\\
+&= (1 +(-1)^k \epsilon_N) \int_{1/\epsilon}^{\epsilon} \int_{1}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) \left( \sum_{i=0}^{k}\binom{k}{i}(\ln y_1)^i (\ln y_2)^{k-i} \right) dy_1 dy_2\\
+&= (1 +(-1)^k \epsilon_N) \sum_{v \in \mathcal{O}_+} a_v \sum_{i=0}^{k}\binom{k}{i} \int_{1/\epsilon}^{\epsilon} \exp \left( \frac{ -2\pi\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^{k-i} dy_2  \int_{1}^{\infty} \exp\left(  \frac{-2\pi vy_1}{\sqrt{N} d}\right) (\ln y_1)^i  dy_1\\
+\end{align*}
+
+For $k \geq 1$, integrating by parts we have
+\begin{equation*}
+\begin{split}
+\int_{1/\epsilon}^{\epsilon} \int_{1}^{\infty} & f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) (\ln y_1+\ln y_2)^k dy_1dy_2\\
+ =& \sum_{v \in \mathcal{O}_+} a_v  \int_{1/\epsilon}^{\epsilon} \exp \left(\frac{ -2\pi \bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right)\int_{1}^{\infty} \exp\left( \frac{ -2\pi  vy_1}{\sqrt{N} d}\right) (\ln y_1+\ln y_2)^k dy_1dy_2\\
+ =& \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \int_{1/\epsilon}^{\epsilon} \exp \left( \frac{ -2\pi\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) \left((\ln y_2)^k \exp\left( \frac{ -2\pi v}{\sqrt{N} d}\right)  + k \int_1^{\infty} \exp\left(\frac{ -2\pi vy_1}{\sqrt{N} d}\right) (\ln y_1+\ln y_2)^{k-1} \frac{dy_1}{y_1}\right) dy_2\\
+ =& \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp\left(\frac{ -2\pi  v}{\sqrt{N} d}\right) \int_{1/\epsilon}^{\epsilon}\exp \left(\frac{ -2\pi \bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^k dy_2\\
+  & -k \sum_{v \in \mathcal{O}_+} a_v  \exp \left(\frac{ -2\pi \bar{v} y_2}{\sqrt{\bar{N}} \bar{d}}\right)  \int_1^{\infty} \exp\left(\frac{ -2\pi  vy_1}{\sqrt{N} d}\right) (\ln y_1+\ln y_2)^{k-1} \frac{dy_1}{y_1}
+\end{split}
+\end{equation*}
+
+%We now integrate with respect to $y_2$:
+%\begin{align*}
+%\int_{1/\epsilon}^{\epsilon} \int_{1}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) (\ln y_1+\ln y_2)^kdy_1 dy_2
+%&= \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp\left( -2\pi \frac{v}{\sqrt{N} d}\right) \int_{1/\epsilon}^{\epsilon}\exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) \ln^k y_2 dy_2 -\\
+% & k \sum_{v \in \mathcal{O}_+} a_v  \int_{1/\epsilon}^{\epsilon} \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}} \bar{d}}\right)  \int_1^{\infty} \exp\left( -2\pi \frac{vy_1}{\sqrt{N} d}\right) (\ln y_1+\ln y_2)^{k-1} \frac{dy_1}{y_1} dy_2
+%\end{align*}
+
+Let
+\begin{equation*}
+G_r(x)=\frac{1}{(r-1)!}\int_1^{\infty} \exp(-xt) (\ln t)^{r-1}\frac{dt}{t}.
+\end{equation*}
+
+When $k=1$, we have:
+\begin{align*}
+\int_{1}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) (\ln y_1+\ln y_2) dy_1
+= & \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp\left( -2\pi \frac{v}{\sqrt{N} d}\right)  \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) \ln y_2 + \\
+& \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} G_1\left( 2\pi \frac{v}{\sqrt{N} d}\right) \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right)
+\end{align*}
+
+We must now integrate with respect to $y_2$. We first do the first integral:
+\begin{align*}
+\int_{1/\epsilon}^{\epsilon} \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) \ln y_2 dy_2
+ = & -\frac{\sqrt{\bar{N}}\bar{d}}{2 \pi\bar{v}} \left( \exp \left( -2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) \ln \epsilon -  \exp \left( -2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \ln(1/\epsilon) \right. \\
+ & + \left. G_1\left(2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right)-G_1\left( 2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right)\\
+= & -\frac{\sqrt{\bar{N}}\bar{d}}{2 \pi\bar{v}} \left( \ln \epsilon \left( \exp \left( -2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) +  \exp \left( -2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right) \right. \\
+ & + \left. G_1\left(2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right)-G_1\left( 2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right)\\
+\end{align*}
+
+Now the second integral:
+\begin{align*}
+\int_{1/ \epsilon}^{\epsilon} \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) dy_2 
+& =  - \frac{\sqrt{\bar{N}}\bar{d}}{2 \pi \bar{v}} \left( \exp \left( -2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) -  \exp \left( -2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right)\right)
+\end{align*}
+
+Altogether we have:
+\begin{align*}
+\int_{1/\epsilon}^{\epsilon} \int_{1}^{\infty} & f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) (\ln y_1+\ln y_2)dy_1 dy_2 \\
+= &- \frac{\mathbb{N}(N)^{1/2}\mathbb{N}(d)}{4 \pi^2 }\sum_{v \in \mathcal{O}_+}  \frac{a_v}{\mathbb{N}(v)}  \exp\left( -2\pi \frac{v}{\sqrt{N} d}\right) \left( \ln \epsilon \left( \exp \left( -2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) +  \exp \left( -2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right) \right. \\
+& + \left. G_1\left(2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right)-G_1\left( 2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right) \\
+- & \frac{\mathbb{N}(N)^{1/2}\mathbb{N}(d)}{4 \pi^2 } \sum_{v \in \mathcal{O}_+} \frac{a_v}{\mathbb{N}(v)}  G_1\left( 2\pi \frac{v}{\sqrt{N} d}\right) \left( \exp \left( -2\pi \frac{\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) -  \exp \left( -2\pi \frac{\bar{v} }{\sqrt{\bar{N}}\bar{d}\epsilon}\right)\right)
+\end{align*}
+
+The first derivative is this whole mess times $(1 - \epsilon_N)$.
+
+We now compute $\Lambda^{(k)}(1,f)$ for general $k$. Recall that:
+\begin{equation*}
+\begin{split}
+\int_{1}^{\infty} &f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) (\ln y_1+\ln y_2)^k dy_1\\
+\qquad = &\sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) \left((\ln y_2)^k \exp\left( -2\pi \frac{v}{\sqrt{N} d}\right) +k \int_1^{\infty} \exp\left( -2\pi \frac{vy_1}{\sqrt{N} d}\right) (\ln y_1+\ln y_2)^{k-1} \frac{dy_1}{y_1}\right)\\
+\qquad = &\sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp\left( -2\pi \frac{v}{\sqrt{N} d}\right) \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^k \\
+\qquad& +  k \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp \left(  \frac{-2\pi\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) \int_1^{\infty} \exp\left( \frac{-2\pi vy_1}{\sqrt{N} d}\right) \left(\sum_{i=0}^{k-1} \binom{k-1}{i} (\ln y_1)^i(\ln y_2)^{k-1-i} \right)\frac{dy_1}{y_1}\\
+\qquad = &\sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp\left( -2\pi \frac{v}{\sqrt{N} d}\right) \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^k \\
+\qquad& +  k \sum_{i=0}^{k-1} \binom{k-1}{i} \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp \left(  \frac{-2\pi\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^{k-1-i} \int_1^{\infty} \exp\left( \frac{-2\pi vy_1}{\sqrt{N} d}\right) (\ln y_1)^i \frac{dy_1}{y_1}\\
+\qquad = &\sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp\left( -2\pi \frac{v}{\sqrt{N} d}\right) \exp \left( -2\pi \frac{\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^k \\
+\qquad& +  k \sum_{i=0}^{k-1} \binom{k-1}{i} \sum_{v \in \mathcal{O}_+} a_v \frac{\sqrt{N}d}{2 \pi v} \exp \left(  \frac{-2\pi\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^{k-1-i} (i+1)! G_{i+1}\left( \frac{2\pi v}{\sqrt{N} d}\right) 
+\end{split}
+\end{equation*}
+
+We must now integrate with respect to $y_2$. To do so, we need a little computation lemma:
+\begin{lemma}
+Let $A$, $B$, and $C$ be positive real numbers and $n$ be a positive integer. Then
+\begin{equation*}
+\begin{split}
+\int_A^B &\exp(-Ct)(\ln t)^n dt \\
+= &-\frac{1}{C}\left( \exp(-BC)(\ln B)^n- \exp(-AC)(\ln A)^n + n \sum_{i=0}^{n-1} \binom{n-1}{i} \left( (\ln B)^{n-1-i}G_i(BC)- (\ln A)^{n-1-i}G_i(AC) \right) \right)
+\end{split}
+\end{equation*}
+\end{lemma}
+\begin{proof}
+Integration by parts, then a change of variables to get $G_i$, which forces a binomial expansion.
+\end{proof}
+
+In particular, if $n$ is a positive integer, we have
+\begin{equation*}
+\begin{split}
+\int_{1/\epsilon}^{\epsilon} &\exp \left(  \frac{-2\pi\bar{v} y_2}{\sqrt{\bar{N}}\bar{d}}\right) (\ln y_2)^{n} dy_2\\
+= &\frac{\sqrt{\bar{N}}\bar{d}}{2 \pi \bar{v}} \left((\ln \epsilon)^n \left( \exp \left(- \frac{2\pi\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) +(-1)^{n+1} \exp\left(  \frac{-2\pi\bar{v}}{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right)\right. \\
+& \left. \qquad+ n \sum_{i=0}^{n-1} \binom{n-1}{i} (\ln \epsilon)^{n-1-i} \left( G_i\left(\frac{2\pi\bar{v} \epsilon}{\sqrt{\bar{N}}\bar{d}}\right) +(-1)^{n-i}G_i\left(  \frac{2\pi\bar{v}}{\sqrt{\bar{N}}\bar{d}\epsilon}\right) \right) \right)
+\end{split}
+\end{equation*}
+
+We now have a formula for 
+\begin{equation*}
+\int_{1/\epsilon}^{\epsilon}\int_{1}^{\infty} f\left(\frac{iy_1}{\sqrt{N}},\frac{iy_2}{\sqrt{\bar{N}}}\right) (\ln y_1+\ln y_2)^k dy_1 dy_2,
+\end{equation*}
+which we do not put together since it would not be instructive. $\Lambda^{(k)}(1,f)$ is this whole mess times $(1 +(-1)^k \epsilon_N)$.
+
+\bibliographystyle{amsplain}
+\bibliography{bibliography}
+
+\end{document}
