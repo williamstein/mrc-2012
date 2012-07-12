@@ -345,7 +345,6 @@ def compute_more_rational_eigenvalues(s, N, bound, verb=False):
         i = dual_vector.nonzero_positions()[0]
         c = dual_vector[i]
         for P in primes_of_bounded_norm(bound):
-            print P,; sys.stdout.flush()
             Ps = P.sage_ideal()
             # 1. Do we already know this eigenvalue or not?
             if s.query(RationalEigenvalue).filter(
@@ -358,6 +357,7 @@ def compute_more_rational_eigenvalues(s, N, bound, verb=False):
             #   2a. if it has residue char coprime to the level, use dual eigenvector
             ap = None
             if NrmN % P.p != 0:
+                print P,; sys.stdout.flush()
                 ap = I.hecke_operator_on_basis_element(Ps, i).dot_product(dual_vector)/c
             
             #   2b. if it has residue char not coprime to level, use slower direct approaches
