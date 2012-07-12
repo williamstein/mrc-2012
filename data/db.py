@@ -345,8 +345,7 @@ def compute_more_rational_eigenvalues(s, N, bound, verb=False):
         i = dual_vector.nonzero_positions()[0]
         c = dual_vector[i]
         for P in primes_of_bounded_norm(bound):
-            if verb:
-                print P,; sys.stdout.flush()
+            print P,; sys.stdout.flush()
             Ps = P.sage_ideal()
             # 1. Do we already know this eigenvalue or not?
             if s.query(RationalEigenvalue).filter(
