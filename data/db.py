@@ -322,14 +322,14 @@ def compute_rational_eigenvectors_in_parallel(B1, B2, bound=100, ncpus=8):
     for X in f([N for N in sum([z for _, z in v.iteritems()],[]) if N.norm() >= B1]):
         print X
 
-def compute_more_rational_eigenvalues(s, N, bound):
+def compute_more_rational_eigenvalues(s, N, bound, verb=False):
     """
     Computes rational eigenvalues for all rational eigenvectors in the
     given space up to the given bound.  Commits result to database only
     if it succeeds at computing all the (good) eigenvalues.
     """
     if not know_all_rational_newforms(s, N):
-        print "Can't compute more rational eigenvalues until we know all rational eigenvectors at level %s (of norm %s)"%(N, N.norm())
+        if verb: print "Can't compute more rational eigenvalues until we know all rational eigenvectors at level %s (of norm %s)"%(N, N.norm())
         return
     else:
         print "Computing more rational eigenvalues for eigenvectors of level %s (of norm %s)"%(N, N.norm())
@@ -345,7 +345,8 @@ def compute_more_rational_eigenvalues(s, N, bound):
         i = dual_vector.nonzero_positions()[0]
         c = dual_vector[i]
         for P in primes_of_bounded_norm(bound):
-            print P,; sys.stdout.flush()
+            if verb:
+                print P,; sys.stdout.flush()
             Ps = P.sage_ideal()
             # 1. Do we already know this eigenvalue or not?
             if s.query(RationalEigenvalue).filter(
@@ -366,13 +367,13 @@ def compute_more_rational_eigenvalues(s, N, bound):
                     ap = 0
                 elif not Ps.divides(N):
                     if vector is None:
-                        print "You need to compute subspace vector to compute a_p at present."
+                        if verb: print "You need to compute subspace vector to compute a_p at present."
                     else:
                         j = vector.nonzero_positions()[0]
                         ap = (vector*M.hecke_matrix(Ps))[j] / vector[j]
                 else:
                     # we have no algorithm directly at present to decide if this is 1 or -1.
-                    print "Can't compute ap for p=%s"%P
+                    if verb: print "Can't compute ap for p=%s"%P
             
             # 3. Store eigenvalue ap in the database.
             if ap is not None:
@@ -381,18 +382,19 @@ def compute_more_rational_eigenvalues(s, N, bound):
 def compute_more_rational_eigenvalues_in_parallel(B1, B2, bound, ncpus=8):
     print "Preloading Hecke operator sets before forking."
     from sage.modular.hilbert.sqrt5 import hecke_elements
+    from ideals_of_norm import ideals_of_norm
+    
     for P in primes_of_bounded_norm(bound):
         print P, len(hecke_elements(P.sage_ideal()))
     
     @parallel(ncpus)
     def f(N):
-        s = session()
-        compute_more_rational_eigenvalues(s, N, bound=bound)
-        s.commit()
+        for I in ideals_of_norm(N): 
+            s = session()
+            compute_more_rational_eigenvalues(s, I, bound=bound)
+            s.commit()
         
-    B1 = max(2,B1)
-    v = F.ideals_of_bdd_norm(B2)
-    for X in f([N for N in sum([z for _, z in v.iteritems()],[]) if N.norm() >= B1]):
+    for X in f(range(max(2,B1), B2+1)):
         print X
     
 
