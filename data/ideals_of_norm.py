@@ -1,4 +1,5 @@
 from psage.modform.hilbert.sqrt5.hmf import *
+from sage.all import *
 
 def prime_powers_of_norm(p,e):
     """

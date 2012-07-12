@@ -542,18 +542,14 @@ class LSeries(LSeriesAbstract):
             return 1 - ap*(T**f) + q*(T**(2*f))
                            
     
-def find_all_curves(B1, B2, verb=False, ncpu=4, maxtime=60*30):
+def find_all_curves(B1, B2, verb=False, ncpu=20, maxtime=60*5):
     from  sage.modular.hilbert.sqrt5_hmf import F, QuaternionicModule
     from sage.all import cputime
-    
-    v = []
-    for N in sum([y for x,y in sorted(F.ideals_of_bdd_norm(B2).iteritems())],[]):
-        if N.norm() == 1: continue
-        if N.norm() < B1: continue
-        v.append(N)
+    import ideals_of_norm
+
+    v = range(max(2,B1), B2+1)
         
-    @parallel(ncpu)
-    def f(N):
+    def g(N):
         from sage.misc.misc import alarm, cancel_alarm
         alarm(maxtime)
         from sqlalchemy import create_engine
@@ -586,6 +582,11 @@ def find_all_curves(B1, B2, verb=False, ncpu=4, maxtime=60*30):
         cancel_alarm()
         return N.norm(), cputime(t), len(V)
 
+    @parallel(ncpu)
+    def f(N):
+        for I in ideals_of_norm.ideals_of_norm(N):
+            return g(I)
+             
     if ncpu > 1:
         for X in f(v):
             print X
