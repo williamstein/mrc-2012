@@ -161,7 +161,7 @@ and we have
 \begin{equation*}
 \exp\left( \frac{-2\pi v}{\sqrt{N}d}\right) \left(\exp\left(\frac{-2 \pi \bar{v} \epsilon}{\sqrt{\bar{N}} \bar{d}}\right) - \exp \left( \frac{-2\pi \bar{v}}{\epsilon \sqrt{\bar{N}}\bar{d}}\right) \right)
 \end{equation*}
-In Demb\'{e}l\'{e}'s formula, $\frac{\epsilon}{d}=\frac{\epsilon+1}{\sqrt{D}}$ and $\frac{1}{\epsilon d}=\frac{1}{\sqrt{D}}$, so he can pull out a factor of $\exp\left(\frac{-2 \pi v}{\sqrt{D}}\right)$ from both terms to make things look good. In ours, $\frac{\epsilon}{\bar{d}}=\frac{1}{\sqrt{D}}$ and $\frac{1}{\epsilon \bar{d}}=\frac{1}{(\epsilon+1) \sqrt{D}}$, so we can't factor out anything. But the norms of the terms are the same, so it should not affect convergence. (Right?)}
+In Demb\'{e}l\'{e}'s formula, $\frac{\epsilon}{d}=\frac{\epsilon+1}{\sqrt{D}}$ and $\frac{1}{\epsilon d}=\frac{1}{\sqrt{D}}$, so he can pull out a factor of $\exp\left(\frac{-2 \pi v}{\sqrt{D}}\right)$ from both terms to make things look good. In ours, $\frac{\epsilon}{\bar{d}}=\frac{1}{\sqrt{D}}$ and $\frac{1}{\epsilon \bar{d}}=\frac{1}{(\epsilon+1) \sqrt{D}}$, so factoring something out doesn't make it look better. Besides, like I said it's really $\epsilon^2$ that should go there if we want the formula to be true in full generality (well, you know, real quadratic field of narrow class number 1 generality), and it would be nicer to have that. In either case, the norms of the terms are the same, so it should not affect convergence. (Right?)}
 
 %Plugging in $A=1$ in this last equation, we have, when $F=\mathbb{Q}(\sqrt{5})$:
 %\begin{align*}
@@ -200,10 +200,10 @@ As a consequence,
 \frac{d}{ds} \Gamma_r(s,x)= \Gamma_r(s,x) \ln x +(r+1)\Gamma_{r+1}(s,x).
 \end{equation*}
 
-All of our formulae for derivatives of $\Lambda(s,f)$ will be in terms of these basic $\Gamma_r(s,x)$ functions. To implement the computation of these functions, we refer to Cohen \cite{cohen} Corollary 8.5.18 when $x \leq 10$ and Proposition 8.5.19 when $x \geq 10$. One might also want to read the Remarks on page 582 for discussions of convergence and accuracy.
+All of our formulae for derivatives of $\Lambda(s,f)$ will be in terms of these basic $\Gamma_r(s,x)$ functions. To implement the computation of these functions, we refer to Cohen \cite{cohen} Corollary 8.5.18 when $x$ is ``small'' and Proposition 8.5.19 when $x$ is ``large", see the discussion on page 578 and the Remarks on page 582 for discussions of accuracy, and how this affects what is meant by ``small" and ``large".
 
-The computation of any derivative of $\Lambda(s,f)$ can easily be done using the following:
-\begin{lemma}\label{computation}
+The computation of any derivative of $\Lambda(s,f)$ can easily be done using some tedious but easy computations:
+\begin{lemma}\label{computation1}
 Let $A$, $B$ and $C$ be positive real numbers and $r_1$ and $r_2$ be two positive integers. Then
 \begin{equation*}
 \begin{split}
@@ -221,7 +221,7 @@ Since $A$, $B$ and $C$ are fixed, we write $F(s, r_1, r_2)=A^{s} \Gamma_{r_1}(s,
 \frac{d^k}{ds^k}   F(s, r_1,r_2) = \sum_{i=0}^{k}\sum_{j=0}^{i}\binom{k}{i}\binom{i}{j} (\ln ABC)^{k-i} \prod_{l_1=1}^{j} (r_1+l_1) \prod_{l_2=1}^{i-j}(r_2+l_2)F(s, r_1+j,r_2+i-j)
 \end{equation*}
 
-We prove this by induction. For the case $k=1$ we have:
+We prove this by induction. For the case $k=1$ and any value of $r_1$ and $r_2$ we have:
 \begin{equation*}
 \frac{d}{ds}  F(s, r_1,r_2) =\ln ABC \, F(s, r_1,r_2) + (r_1+1) F(s, r_1+1,r_2)+(r_2+1)F(s, r_1,r_2+1),
 \end{equation*}
@@ -245,13 +245,55 @@ We fix a pair $(m,n)$, and gather the coefficient of the term $F(s, r_1+m, r_2+n
 
 \end{proof}
 
-For the convenience of the reader and whoever will implement this, we now write down the formulae we will need for $\Lambda^{(1)}(1,f)$ and $\Lambda^{(2)}(1,f)$.  To ease the notation, we set $A=\frac{\mathbb{N}(N)^{1/2}D}{4\pi^2\mathbb{N}(v)}$, $B=\frac{2\pi v }{\sqrt{N}d}$, $C_1=\frac{2 \pi \bar{v}}{\sqrt{\bar{N}}\bar{d} \epsilon}$ and $C_2=\frac{2 \pi \bar{v}\epsilon}{\sqrt{\bar{N}}\bar{d} }$, where $N$, $D$, $d$ and $\epsilon$ are as defined at the very beginning, and $v \in \mathcal{O}_+$. Thus $A$, $B$, $C_1$ and $C_2$, under our choice of embedding $\sigma$, can be thought of as positive real numbers. Then
+And therefore we have:
+
+\begin{lemma}\label{computation}
+Let $A$, $B$ and $C$ be positive real numbers, then we have:
+\begin{equation}
+\begin{split}
+\frac{d^k}{ds^k} \left(A^s \Gamma_0(s,B) \Gamma_0(s,C)\right)= & \sum_{i=0}^{k}\binom{k}{i} \prod_{l_1=1}^{i} l_1 \prod_{l_2=1}^{k-i} l_2 \, A^{s} \Gamma_{i}(s,B) \Gamma_{k-i}(s, C)\\
+&+\sum_{i=1}^{k} (-1)^{i-1} (\ln ABC)^i \binom{k}{i}\frac{d^{k-i}}{ds^{k-i}} (A^s \Gamma_0(s,B) \Gamma_0(s,C)),
+\end{split}
+\end{equation}
+where as before $\prod_{i=1}^{0} x =1$
+\end{lemma}
+
+\begin{proof}
+We prove this by induction. When $k=1$ the Lemma says
+\begin{equation*}
+\frac{d}{ds} (A^s \Gamma_0(s,B) \Gamma_0(s,C) )= A^s \Gamma_0(s,B) \Gamma_1(s,C) + A^s \Gamma_1(s,B)\Gamma_0(s,C) + \ln ABC \, A^s \Gamma_0(s,B) \Gamma_0(s,C)
+\end{equation*}
+which has been shown in Lemma \ref{computation1}.
+
+We now assume the formula for $k$, and again we write $F(s, r_1, r_2)=A^{s} \Gamma_{r_1}(s,B) \Gamma_{r_2}(s, C)$ to ease notation.
+\begin{equation*}
+\begin{split}
+\frac{d^{k+1}}{ds^{k+1}}F(s,0,0)& =  \sum_{i=0}^{k}\binom{k}{i} \prod_{l_1=1}^{i} l_1 \prod_{l_2=1}^{k-i} l_2 \, \frac{d}{ds} F(s, i, k-i)+\sum_{i=1}^{k} (-1)^{i-1} (\ln ABC)^i \binom{k}{i} \frac{d^{k-i+1}}{ds^{k-i+1}} F(s,0,0)\\
+& = \sum_{i=0}^{k}\binom{k}{i} \prod_{l_1=1}^{i} l_1 \prod_{l_2=1}^{k-i} l_2 \, (\ln ABC \, F(s, i,k-i) + (i+1) F(s, i+1,k-i)+(k-i+1)F(s, i,k-i+1))\\
+& \quad +\sum_{i=1}^{k} (-1)^{i-1} (\ln ABC)^i \binom{k}{i} \frac{d^{k-i+1}}{ds^{k-i+1}} F(s,0,0)\\
+& = \ln ABC  \frac{d^k}{ds^k} F(s,0,0)-\sum_{i=1}^{k} (-1)^{i-1} (\ln ABC)^{i+1} \binom{k}{i}\frac{d^{k-i}}{ds^{k-i}} F(s,0,0)\\
+& \quad + \sum_{i=1}^{k+1}\binom{k}{i-1} \prod_{l_1=1}^{i} l_1 \prod_{l_2=1}^{k+1-i} l_2 \, F(s, i,k+1-i) + \sum_{i=0}^{k}\binom{k}{i} \prod_{l_1=1}^{i} l_1 \prod_{l_2=1}^{k+1-i} l_2 \,  F(s, i,k+1-i)\\
+& \quad  +\sum_{i=1}^{k} (-1)^{i-1} (\ln ABC)^i \binom{k}{i} \frac{d^{k+1-i}}{ds^{k+1-i}} F(s,0,0)\\
+& = \sum_{i=1}^{k+1} (-1)^{i-1} (\ln ABC)^{i} \binom{k}{i-1}\frac{d^{k+1-i}}{ds^{k+1-i}} F(s,0,0) +\sum_{i=1}^{k} (-1)^{i-1} (\ln ABC)^i \binom{k}{i} \frac{d^{k+1-i}}{ds^{k+1-i}} F(s,0,0) \\
+& \quad +\sum_{i=0}^{k+1}\binom{k+1}{i} \prod_{l_1=1}^{i} l_1 \prod_{l_2=1}^{k+1-i} l_2 \, F(s, i,k+1-i)\\
+& = \sum_{i=1}^{k+1} (-1)^{i-1} (\ln ABC)^{i} \binom{k+1}{i}\frac{d^{k+1-i}}{ds^{k+1-i}} F(s,0,0)  +\sum_{i=0}^{k+1}\binom{k+1}{i} \prod_{l_1=1}^{i} l_1 \prod_{l_2=1}^{k+1-i} l_2 \, F(s, i,k+1-i)
+\end{split}
+\end{equation*}
+
+This completes the proof.
+\end{proof}
+
+From now on, to ease the notation we set $A=\frac{\mathbb{N}(N)^{1/2}D}{4\pi^2\mathbb{N}(v)}$, $B=\frac{2\pi v }{\sqrt{N}d}$, $C_1=\frac{2 \pi \bar{v}}{\sqrt{\bar{N}}\bar{d} \epsilon}$ and $C_2=\frac{2 \pi \bar{v}\epsilon}{\sqrt{\bar{N}}\bar{d} }$, where $N$, $D$, $d$ and $\epsilon$ are as defined at the very beginning, and $v \in \mathcal{O}_+$. Thus $A$, $B$, $C_1$ and $C_2$, under our choice of embedding $\sigma$, can be thought of as positive real numbers.
+Then
 \begin{equation}\label{simpleLambda}
 \begin{split}
 \Lambda(s,f)= \sum_{v \in \mathcal{O}_+} a_v \left( \right. &A^s \Gamma_0(s, B)\Gamma_0(s,C_1)  - A^s\Gamma_0(s,B)\Gamma_0(s,C_2)  \\
 &+\left. \epsilon_N A^{2-s}\Gamma_0(2-s,B)\Gamma_0(2-s,C_1)-\epsilon_N A^{2-s}\Gamma_0(2-s,B)\Gamma_0(2-s,C_2) \right).
 \end{split}
 \end{equation}
+
+Using Lemma \ref{computation} it is now a straightforward, albeit tedious, computation to obtain a formula for $\Lambda^{(k)}(s,f)$. For this work we shall not need to work in such generality, and we now write down the formulae we will need for $\Lambda^{(1)}(1,f)$ and $\Lambda^{(2)}(1,f)$.
+
 
 \begin{proposition}
 Suppose that $f$ is such that $\epsilon_N=-1$. Then
@@ -312,7 +354,7 @@ Again, we first compute $\Lambda^{(2)}(s,f)$ by applying Lemma \ref{computation}
 & - ((\ln ABC_2)^2A^s\Gamma_0(s,B)\Gamma_0(s,C_2) + 2 \ln(ABC_2) A^s\Gamma_0(s,B)\Gamma_1(s,C_2)\\
 & \quad + 2 \ln(ABC_2) A^s\Gamma_1(s,B)\Gamma_0(s,C_2) +2 A^s \Gamma_0(s,B)\Gamma_2(s,C_2)\\
 & \quad +2 A^s \Gamma_1(s,B)\Gamma_1(s,C_2)+2 A^s \Gamma_2(s,B)\Gamma_0(s,C_2))  \\
-&+ \epsilon_N((\ln ABC_1)^2A^{2-s}\Gamma_0(2-s,B)\Gamma_0(2-s,C_1) + 2 \ln(ABC_2) A^{2-s}\Gamma_0(2-s,B)\Gamma_1(2-s,C_1)\\
+&+ \epsilon_N((\ln ABC_1)^2A^{2-s}\Gamma_0(2-s,B)\Gamma_0(2-s,C_1) + 2 \ln(ABC_1) A^{2-s}\Gamma_0(2-s,B)\Gamma_1(2-s,C_1)\\
 & \quad+ 2 \ln(ABC_1) A^{2-s}\Gamma_1(2-s,B)\Gamma_0(2-s,C_1) +2 A^{2-s} \Gamma_0(2-s,B)\Gamma_2(2-s,C_1) \\
 & \quad+2 A^{2-s} \Gamma_1(2-s,B)\Gamma_1(2-s,C_1)+2 A^{2-s} \Gamma_2(2-s,B)\Gamma_0(2-s,C_1))\\
 & -\epsilon_N ((\ln ABC_2)^2A^{2-s}\Gamma_0(2-s,B)\Gamma_0(2-s,C_2) + 2 \ln(ABC_2) A^{2-s}\Gamma_0(2-s,B)\Gamma_1(2-s,C_2)\\
